@@ -19,8 +19,14 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'nip','nip_lama',
+        'username',
         'email',
         'password',
+        'api_token',
+        'api_token_web',
+        'api_token_smile',
+        'jwt_token',
     ];
 
     /**
@@ -44,5 +50,20 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Disable remember token if not needed
+     * (Optional – Breeze default uses it)
+     */
+    protected $rememberTokenName = 'remember_token';
+
+    /**
+     * Get the identifier used for authentication.
+     * Breeze default: email → diganti username
+     */
+    public function getAuthIdentifierName()
+    {
+        return 'username';
     }
 }

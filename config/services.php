@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'stara' => [
+        'login' => env('STARA_API_URL'),
+    ],
+
 ];
