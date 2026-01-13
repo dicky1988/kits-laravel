@@ -78,6 +78,32 @@
             </a>
         </li>
 
+        @foreach($menus as $menu)
+            @if(!$menu->permission || auth()->user()->can($menu->permission))
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ $menu->route ? route($menu->route) : '#' }}">
+                        <i class="{{ $menu->icon }}"></i>
+                        <span>{{ $menu->title }}</span>
+                    </a>
+
+                    @if($menu->children->count())
+                        <ul class="nav flex-column ms-3">
+                            @foreach($menu->children as $child)
+                                @can($child->permission)
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route($child->route) }}">
+                                            <i class="{{ $child->icon }}"></i>
+                                            {{ $child->title }}
+                                        </a>
+                                    </li>
+                                @endcan
+                            @endforeach
+                        </ul>
+                    @endif
+                </li>
+            @endif
+        @endforeach
+
     </ul>
 
 </aside>
