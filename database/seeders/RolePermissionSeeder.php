@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Permission;
-use App\Models\Role;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\PermissionRegistrar;
@@ -15,36 +16,35 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         // PERMISSIONS
         $permissions = [
             'menu.dashboard',
-            'menu.user',
             'menu.setting',
             'menu.admin',
         ];
 
         foreach ($permissions as $perm) {
             Permission::firstOrCreate([
-                'name'       => $perm,
+                'name' => $perm,
                 'guard_name' => 'web',
             ]);
         }
 
-        // ROLES
-        $admin = Role::firstOrCreate([
-            'name'       => 'admin',
+        // ROLE
+        $superadmin = Role::firstOrCreate([
+            'name' => 'superadmin',
             'guard_name' => 'web',
         ]);
 
-        $user = Role::firstOrCreate([
-            'name'       => 'user',
-            'guard_name' => 'web',
-        ]);
+        // 🔥 INI YANG MENGISI role_has_permissions
+        $superadmin->givePermissionTo(Permission::all());
 
-        // ASSIGN PERMISSIONS
-        $admin->givePermissionTo(Permission::all());
-        $user->givePermissionTo('menu.dashboard');
+        // USER
+        $user = User::find(1);
+        if ($user) {
+            $user->assignRole($superadmin);
+        }
     }
 }
