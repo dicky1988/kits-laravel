@@ -2,23 +2,24 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
+use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use Spatie\Permission\PermissionRegistrar;
 
 class RolePermissionSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
+        // clear cache
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        // PERMISSIONS
+        /**
+         * ========================
+         * PERMISSIONS
+         * ========================
+         */
         $permissions = [
             'menu.dashboard',
             'menu.setting',
@@ -27,24 +28,71 @@ class RolePermissionSeeder extends Seeder
 
         foreach ($permissions as $perm) {
             Permission::firstOrCreate([
-                'name' => $perm,
+                'name'       => $perm,
                 'guard_name' => 'web',
             ]);
         }
 
-        // ROLE
+        /**
+         * ========================
+         * ROLES
+         * ========================
+         */
         $superadmin = Role::firstOrCreate([
-            'name' => 'superadmin',
+            'name'       => 'superadmin',
             'guard_name' => 'web',
         ]);
 
-        // 🔥 INI YANG MENGISI role_has_permissions
-        $superadmin->givePermissionTo(Permission::all());
+        $adminapp = Role::firstOrCreate([
+            'name'       => 'adminapp',
+            'guard_name' => 'web',
+        ]);
 
-        // USER
+        $userRole = Role::firstOrCreate([
+            'name'       => 'user',
+            'guard_name' => 'web',
+        ]);
+
+        /**
+         * ========================
+         * ROLE → PERMISSION
+         * ========================
+         */
+
+        // superadmin akses semua
+        $superadmin->syncPermissions(Permission::all());
+
+        // adminapp contoh: dashboard + setting
+        $adminapp->syncPermissions([
+            'menu.dashboard',
+            'menu.setting',
+        ]);
+
+        // user contoh: dashboard saja
+        $userRole->syncPermissions([
+            'menu.dashboard',
+        ]);
+
+        /**
+         * ========================
+         * USER → ROLE
+         * ========================
+         */
         $user = User::find(1);
+
         if ($user) {
-            $user->assignRole($superadmin);
+            // assign MULTIPLE roles sekaligus
+            $user->syncRoles([
+                'superadmin',
+                'adminapp',
+                'user',
+            ]);
+
+            // set active role default (opsional tapi direkomendasikan)
+            if (!$user->active_role_id) {
+                $user->active_role_id = $superadmin->id;
+                $user->save();
+            }
         }
     }
 }

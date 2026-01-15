@@ -94,10 +94,8 @@
             @php
                 $hasChildren = $menu->children->count() > 0;
 
-                // parent aktif
                 $isActive = $menu->route && request()->routeIs($menu->route);
 
-                // child aktif
                 $isChildActive = $hasChildren && $menu->children->contains(function ($child) {
                     return $child->route && request()->routeIs($child->route);
                 });
@@ -105,10 +103,12 @@
                 $collapseId = 'menu-collapse-' . $menu->id;
             @endphp
 
-            @can($menu->permission)
+            {{-- 🔥 FILTER ROLE AKTIF --}}
+            @if(!$menu->permission || canActiveRole($menu->permission))
+
                 <li class="nav-item">
 
-                    {{-- PARENT MENU --}}
+                    {{-- PARENT --}}
                     <a class="nav-link d-flex justify-content-between align-items-center
                {{ ($isActive || $isChildActive) ? 'active' : '' }}"
                        href="{{ $hasChildren ? '#' : route($menu->route) }}"
@@ -128,31 +128,33 @@
                         @endif
                     </a>
 
-                    {{-- CHILD MENU --}}
+                    {{-- CHILD --}}
                     @if($hasChildren)
-                        <ul class="nav flex-column collapse
-                    {{ $isChildActive ? 'show' : '' }}"
-                            id="{{ $collapseId }}"
-                        >
+                        <ul class="nav flex-column collapse {{ $isChildActive ? 'show' : '' }}"
+                            id="{{ $collapseId }}">
                             @foreach($menu->children as $child)
-                                @can($child->permission)
+
+                                {{-- 🔥 FILTER ROLE AKTIF --}}
+                                @if(!$child->permission || canActiveRole($child->permission))
 
                                     <li class="nav-item ms-3">
                                         <a class="nav-link
-                                    {{ request()->routeIs($child->route) ? 'active' : '' }}"
+                                   {{ request()->routeIs($child->route) ? 'active' : '' }}"
                                            href="{{ route($child->route) }}">
                                             <i class="{{ $child->icon }}"></i>
                                             {{ $child->title }}
                                         </a>
                                     </li>
 
-                                @endcan
+                                @endif
+
                             @endforeach
                         </ul>
                     @endif
 
                 </li>
-            @endcan
+
+            @endif
 
         @endforeach
 

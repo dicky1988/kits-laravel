@@ -28,6 +28,7 @@ class User extends Authenticatable
         'api_token_web',
         'api_token_smile',
         'jwt_token',
+        'active_role_id'
     ];
 
     /**
@@ -66,5 +67,13 @@ class User extends Authenticatable
     public function getAuthIdentifierName()
     {
         return 'username';
+    }
+
+    public function activeRole()
+    {
+        return $this->belongsTo(
+            \Spatie\Permission\Models\Role::class,
+            'active_role_id'
+        );
     }
 }

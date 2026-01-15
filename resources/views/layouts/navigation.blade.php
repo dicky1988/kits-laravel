@@ -28,12 +28,51 @@
             </ul>
 
             {{-- Right menu --}}
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav ms-auto align-items-center gap-2">
 
+                {{-- ROLE SWITCHER --}}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle fw-semibold"
+                       href="#"
+                       role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
+
+                        <i class="fa fa-id-badge me-1"></i>
+                        {{ ucfirst(optional(auth()->user()->roles
+                            ->firstWhere('id', auth()->user()->active_role_id))->name) }}
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+
+                        @foreach(auth()->user()->roles as $role)
+                            <li>
+                                <form action="{{ route('switch.role') }}"
+                                      method="POST"
+                                      class="m-0">
+                                    @csrf
+                                    <input type="hidden" name="role_id" value="{{ $role->id }}">
+
+                                    <button type="submit"
+                                            class="dropdown-item
+                                {{ auth()->user()->active_role_id == $role->id ? 'active fw-semibold' : '' }}">
+                                        <i class="fa fa-shield-alt me-2"></i>
+                                        {{ ucfirst($role->name) }}
+                                    </button>
+                                </form>
+                            </li>
+                        @endforeach
+
+                    </ul>
+                </li>
+
+                {{-- USER DROPDOWN --}}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle d-flex align-items-center"
-                       href="#" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
+                       href="#"
+                       role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
 
                         <i class="fa fa-user-circle me-2"></i>
                         {{ Auth::user()->name }}

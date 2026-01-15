@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\SwitchRoleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
 
@@ -21,8 +22,14 @@ Route::middleware('auth')->group(function () {
         ->name('logout');
 });
 
-Route::middleware(['auth', 'permission:menu.admin'])
+/*Route::middleware(['auth', 'permission:menu.admin'])
     ->get('/users', [UserController::class, 'index'])
-    ->name('users.index');
+    ->name('users.index');*/
+
+Route::post('/switch-role', [SwitchRoleController::class, 'switch'])
+    ->name('switch.role');
+
+Route::get('/users', [UserController::class, 'index'])
+    ->middleware('active.permission:menu.admin')->name('users.index');
 
 require __DIR__.'/auth.php';
