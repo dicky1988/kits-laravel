@@ -113,6 +113,25 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        'tte_new' => [
+            'driver' => env('TTE_NEW_DB_CONNECTION', 'mysql'),
+            'host' => env('TTE_NEW_DB_HOST', '127.0.0.1'),
+            'port' => env('TTE_NEW_DB_PORT', '3306'),
+            'database' => env('TTE_NEW_DB_DATABASE', 'forge'),
+            'username' => env('TTE_NEW_DB_USERNAME', 'forge'),
+            'password' => env('TTE_NEW_DB_PASSWORD', ''),
+            'unix_socket' => env('TTE_NEW_DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                (PHP_VERSION_ID >= 80500 ? \Pdo\Mysql::ATTR_SSL_CA : \PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
     ],
 
     /*

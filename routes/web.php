@@ -29,7 +29,11 @@ Route::middleware('auth')->group(function () {
 Route::post('/switch-role', [SwitchRoleController::class, 'switch'])
     ->name('switch.role');
 
-Route::get('/users', [UserController::class, 'index'])
+Route::middleware(['auth'])
+    ->get('/users', [UserController::class, 'index'])
     ->middleware('active.permission:menu.admin')->name('users.index');
+Route::middleware(['auth'])
+    ->post('/users/sync-tte', [UserController::class, 'sync'])
+    ->name('users.sync.tte');
 
 require __DIR__.'/auth.php';
