@@ -35,5 +35,13 @@ Route::middleware(['auth'])
 Route::middleware(['auth'])
     ->post('/users/sync-tte', [UserController::class, 'sync'])
     ->name('users.sync.tte');
+Route::middleware(['auth'])->patch('/users/{id}/activate', [UserController::class, 'activateViaApi'])
+    ->name('users.api.activate');
+Route::middleware(['auth'])->patch('/users/{id}/deactivate', [UserController::class, 'deactivateViaApi'])
+    ->name('users.api.deactivate');
+Route::middleware(['auth'])->patch('/users/{id}/activate/sync', [UserController::class, 'activateSyncViaApi'])
+    ->name('users.api.activate.sync');
+Route::middleware(['auth'])->patch('/users/{id}/deactivate/sync', [UserController::class, 'deactivateSyncViaApi'])
+    ->name('users.api.deactivate.sync');
 
 require __DIR__.'/auth.php';

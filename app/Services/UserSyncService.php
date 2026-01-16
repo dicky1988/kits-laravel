@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\UserTteNew;
+use Illuminate\Support\Facades\Hash;
 
 class UserSyncService
 {
@@ -16,33 +17,60 @@ class UserSyncService
 
                 foreach ($tteUsers as $tteUser) {
 
-                    User::updateOrCreate(
-                    // KEY (untuk cari data)
-                        [
-                            'nip_lama' => $tteUser->pegawai_id,
-                        ],
+                    $user = User::where('nip_lama', $tteUser->pegawai_id)->first();
 
-                        // DATA YANG DIUPDATE / INSERT
-                        [
-                            'name'     => $tteUser->name,
-                            //'username' => $tteUser->username
-                            //    ?? strtolower(str_replace(' ', '.', $tteUser->name)),
-                            'username' => $tteUser->nip,
-                            'email'    => $tteUser->email,
-                            'nip'      => $tteUser->nip,
-                            'nip_lama' => $tteUser->pegawai_id,
-                            'password' => bcrypt('password'), // hanya dipakai saat insert
-                            'nik'      => $tteUser->nik,
-                            'eselon'           => $tteUser->eselon,
-                            'akses_modul'      => $tteUser->akses_modul,
-                            'is_ujikom'        => $tteUser->is_ujikom,
-                            'is_sertifikat'    => $tteUser->is_sertifikat,
-                            'is_bangkom'       => $tteUser->is_bangkom,
-                            'is_skp'           => $tteUser->is_skp,
-                            'is_bidang3'       => $tteUser->is_bidang3,
-                            'is_aktif'         => $tteUser->is_aktif,
-                        ]
-                    );
+                    // ===============================
+                    // JIKA DATA SUDAH ADA
+                    // ===============================
+                    if ($user) {
+
+                        // 🚫 Jangan update jika is_sync = 0
+                        if ((int) $user->is_sync === 0) {
+                            continue;
+                        }
+
+                        // Update data
+                        $user->update([
+                            'name'           => $tteUser->name,
+                            'username'       => $tteUser->nip,
+                            'email'          => $tteUser->email,
+                            'nip'            => $tteUser->nip,
+                            'nik'            => $tteUser->nik,
+                            'eselon'         => $tteUser->eselon,
+                            'akses_modul'    => $tteUser->akses_modul,
+                            'is_ujikom'      => $tteUser->is_ujikom,
+                            'is_sertifikat'  => $tteUser->is_sertifikat,
+                            'is_bangkom'     => $tteUser->is_bangkom,
+                            'is_skp'         => $tteUser->is_skp,
+                            'is_bidang3'     => $tteUser->is_bidang3,
+                            'is_aktif'       => $tteUser->is_aktif,
+                        ]);
+
+                        $count++;
+                        continue;
+                    }
+
+                    // ===============================
+                    // JIKA DATA BELUM ADA → INSERT
+                    // ===============================
+                    User::create([
+                        'name'           => $tteUser->name,
+                        'username'       => $tteUser->nip,
+                        'email'          => $tteUser->email,
+                        'nip'            => $tteUser->nip,
+                        'nip_lama'       => $tteUser->pegawai_id,
+                        'password'       => Hash::make('password'),
+                        'nik'            => $tteUser->nik,
+                        'eselon'         => $tteUser->eselon,
+                        'akses_modul'    => $tteUser->akses_modul,
+                        'is_ujikom'      => $tteUser->is_ujikom,
+                        'is_sertifikat'  => $tteUser->is_sertifikat,
+                        'is_bangkom'     => $tteUser->is_bangkom,
+                        'is_skp'         => $tteUser->is_skp,
+                        'is_bidang3'     => $tteUser->is_bidang3,
+                        'is_aktif'       => $tteUser->is_aktif,
+                        //'is_sync'        => 1, // default sync aktif
+                    ]);
 
                     $count++;
                 }

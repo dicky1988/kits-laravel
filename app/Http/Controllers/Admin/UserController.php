@@ -12,6 +12,15 @@ use Illuminate\View\View;
 
 class UserController extends Controller
 {
+    private function api()
+    {
+        return Http::timeout(5)
+            ->withHeaders([
+                'Authorization' => 'Bearer ' . config('api.token'),
+                'Accept'        => 'application/json',
+            ]);
+    }
+
     public function index(Request $request)
     {
         // breadcrumb dinamis
@@ -79,5 +88,54 @@ class UserController extends Controller
             ->route('users.index')
             ->with('success', "Sinkronisasi berhasil. {$total} data diproses.");
         //return back()->with('success', "Sinkronisasi berhasil: {$total} data diproses");
+    }
+
+    public function activateViaApi($id)
+    {
+        $response = $this->api()
+            ->patch(config('api.base_url') . "/api/users/{$id}/activate");
+
+        if ($response->failed()) {
+            return back()->withErrors('Gagal mengaktifkan user');
+        }
+
+        return back()->with('success', 'User berhasil diaktifkan');
+
+    }
+
+    public function deactivateViaApi($id)
+    {
+        $response = $this->api()
+            ->patch(config('api.base_url') . "/api/users/{$id}/deactivate");
+
+        if ($response->failed()) {
+            return back()->withErrors('Gagal menonaktifkan user');
+        }
+
+        return back()->with('success', 'User berhasil dinonaktifkan');
+    }
+
+    public function activateSyncViaApi($id)
+    {
+        $response = $this->api()
+            ->patch(config('api.base_url') . "/api/users/{$id}/activate/sync");
+
+        if ($response->failed()) {
+            return back()->withErrors('Gagal mengaktifkan sync user');
+        }
+
+        return back()->with('success', 'User Sync berhasil diaktifkan');
+    }
+
+    public function deactivateSyncViaApi($id)
+    {
+        $response = $this->api()
+            ->patch(config('api.base_url') . "/api/users/{$id}/deactivate/sync");
+
+        if ($response->failed()) {
+            return back()->withErrors('Gagal menonaktifkan sync user');
+        }
+
+        return back()->with('success', 'User Sync berhasil dinonaktifkan');
     }
 }

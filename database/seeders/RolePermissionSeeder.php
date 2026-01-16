@@ -53,6 +53,21 @@ class RolePermissionSeeder extends Seeder
             'guard_name' => 'web',
         ]);
 
+        $pegawai = Role::firstOrCreate([
+            'name'       => 'pegawai',
+            'guard_name' => 'web',
+        ]);
+
+        $sekretaris = Role::firstOrCreate([
+            'name'       => 'sekretaris',
+            'guard_name' => 'web',
+        ]);
+
+        $struktural = Role::firstOrCreate([
+            'name'       => 'struktural',
+            'guard_name' => 'web',
+        ]);
+
         /**
          * ========================
          * ROLE → PERMISSION

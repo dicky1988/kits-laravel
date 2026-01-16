@@ -106,7 +106,7 @@
             {{-- 🔥 FILTER ROLE AKTIF --}}
             @if(!$menu->permission || canActiveRole($menu->permission))
 
-                <li class="nav-item">
+                <li class="nav-item mt-1">
 
                     {{-- PARENT --}}
                     <a class="nav-link d-flex justify-content-between align-items-center
@@ -137,7 +137,7 @@
                                 {{-- 🔥 FILTER ROLE AKTIF --}}
                                 @if(!$child->permission || canActiveRole($child->permission))
 
-                                    <li class="nav-item ms-3">
+                                    <li class="nav-item ms-3 mt-1">
                                         <a class="nav-link
                                    {{ request()->routeIs($child->route) ? 'active' : '' }}"
                                            href="{{ route($child->route) }}">

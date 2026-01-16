@@ -129,6 +129,8 @@
                                 @endif
                             </a>
                         </th>
+
+                        <th width="120" class="text-center">Aksi</th>
                     </tr>
                     </thead>
 
@@ -142,10 +144,22 @@
                             <td>{{ $user['email'] }}</td>
                             <td>{{ format_nip($user['nip']) }}</td>
                             <td>{{ \Carbon\Carbon::parse($user['created_at'])->format('d M Y H:i:s') }}</td>
+
+                            <td class="text-center">
+                                <x-toggle-user-status-button
+                                    :user-id="$user['id']"
+                                    :is-active="($user['is_aktif'] ?? 1) == 1"
+                                />
+
+                                <x-toggle-user-sync-button
+                                    :user-id="$user['id']"
+                                    :is-active="($user['is_sync'] ?? 1) == 1"
+                                />
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center text-muted">
+                            <td colspan="6" class="text-center text-muted">
                                 Tidak ada data
                             </td>
                         </tr>
@@ -214,4 +228,43 @@
             });
         </script>
     @endif
+
+    <script>
+        function confirmAction(title, text, icon, confirmText, formId) {
+
+            const form = document.getElementById(formId);
+
+            if (!form) {
+                console.error('Form tidak ditemukan:', formId);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Form tidak ditemukan'
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: icon,
+                showCancelButton: true,
+                confirmButtonText: confirmText,
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#0d6efd',
+                cancelButtonColor: '#6c757d'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    Swal.fire({
+                        title: 'Memproses...',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+
+                    form.submit();
+                }
+            });
+        }
+    </script>
 @endpush
