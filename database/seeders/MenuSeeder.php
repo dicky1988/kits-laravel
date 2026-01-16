@@ -35,5 +35,21 @@ class MenuSeeder extends Seeder
             'parent_id' => $setting->id,
             'permission' => 'menu.admin',
         ]);
+
+        $referensi = Menu::create([
+            'title' => 'Referensi',
+            'icon' => 'fas fa-cog', // gear tetap oke
+            'permission' => 'menu.referensi',
+            'order' => 3,
+        ]);
+
+        Menu::create([
+            'title' => 'Jenis Surat',
+            'icon' => 'fas fa-file-alt', // ganti menjadi icon dokumen
+            'route' => 'users.index',
+            'parent_id' => $referensi->id,
+            'permission' => 'menu.referensi',
+        ]);
+
     }
 }
