@@ -98,6 +98,7 @@
                 <table class="table table-bordered table-striped align-middle">
                     <thead class="table-light">
                     <tr class="text-center">
+                        <th width="40"></th>
                         <th width="60">#</th>
 
                         <th class="text-start text-center">
@@ -137,6 +138,17 @@
                     <tbody>
                     @forelse($users as $user)
                         <tr class="{{ ($user['is_aktif'] ?? 1) == 0 ? 'table-danger text-muted' : '' }}">
+
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-light"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#detail-{{ $user['id'] }}"
+                                        aria-expanded="false">
+                                    <i id="icon-{{ $user['id'] }}" class="fa fa-plus"></i>
+                                </button>
+                            </td>
+
                             <td class="text-center">
                                 {{ (($meta['current_page'] - 1) * $meta['per_page']) + $loop->iteration }}
                             </td>
@@ -157,9 +169,58 @@
                                 />
                             </td>
                         </tr>
+
+                        {{-- ROW DETAIL (COLLAPSE) --}}
+                        <tr class="collapse bg-light" id="detail-{{ $user['id'] }}">
+                            <td colspan="8">
+                                <div class="p-3">
+                                    <div class="row g-3">
+
+                                        {{-- STATUS USER --}}
+                                        <div class="col-md-6">
+                                            <div class="border rounded p-3 h-100 bg-white shadow-sm">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div>
+                                                        <div class="text-muted small">Status User</div>
+                                                        {!! ($user['is_aktif'] ?? 1)
+                                                            ? '<span class="badge bg-success fs-6 mt-1">
+                                                                    <i class="fa fa-user-check me-1"></i> Aktif
+                                                               </span>'
+                                                            : '<span class="badge bg-danger fs-6 mt-1">
+                                                                    <i class="fa fa-user-slash me-1"></i> Nonaktif
+                                                               </span>' !!}
+                                                    </div>
+                                                    <i class="fa fa-user fa-2x text-muted opacity-25"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {{-- STATUS SYNC --}}
+                                        <div class="col-md-6">
+                                            <div class="border rounded p-3 h-100 bg-white shadow-sm">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div>
+                                                        <div class="text-muted small">Sinkronisasi TTE</div>
+                                                        {!! ($user['is_sync'] ?? 1)
+                                                            ? '<span class="badge bg-primary fs-6 mt-1">
+                                                                    <i class="fa fa-sync-alt me-1"></i> Aktif
+                                                               </span>'
+                                                            : '<span class="badge bg-secondary fs-6 mt-1">
+                                                                    <i class="fa fa-ban me-1"></i> Nonaktif
+                                                               </span>' !!}
+                                                    </div>
+                                                    <i class="fa fa-sync fa-2x text-muted opacity-25"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center text-muted">
+                            <td colspan="7" class="text-center text-muted">
                                 Tidak ada data
                             </td>
                         </tr>
@@ -266,5 +327,52 @@
                 }
             });
         }
+    </script>
+    <script>
+        function toggleIcon(id) {
+            const icon = document.getElementById('icon-' + id);
+            const collapse = document.getElementById('detail-' + id);
+
+            if (!icon || !collapse) return;
+
+            setTimeout(() => {
+                if (collapse.classList.contains('show')) {
+                    icon.classList.remove('fa-plus');
+                    icon.classList.add('fa-minus');
+                } else {
+                    icon.classList.remove('fa-minus');
+                    icon.classList.add('fa-plus');
+                }
+            }, 150);
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            document.querySelectorAll('.collapse').forEach(function (collapseEl) {
+
+                collapseEl.addEventListener('shown.bs.collapse', function () {
+                    const id = collapseEl.id.replace('detail-', '');
+                    const icon = document.getElementById('icon-' + id);
+
+                    if (icon) {
+                        icon.classList.remove('fa-plus');
+                        icon.classList.add('fa-minus');
+                    }
+                });
+
+                collapseEl.addEventListener('hidden.bs.collapse', function () {
+                    const id = collapseEl.id.replace('detail-', '');
+                    const icon = document.getElementById('icon-' + id);
+
+                    if (icon) {
+                        icon.classList.remove('fa-minus');
+                        icon.classList.add('fa-plus');
+                    }
+                });
+
+            });
+
+        });
     </script>
 @endpush
