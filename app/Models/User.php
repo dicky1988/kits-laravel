@@ -28,7 +28,9 @@ class User extends Authenticatable
         'api_token_web',
         'api_token_smile',
         'jwt_token',
-        'active_role_id'
+        'active_role_id',
+        'nik','eselon','akses_modul',
+        'is_ujikom','is_sertifikat','is_bangkom','is_skp','is_bidang3','is_aktif',
     ];
 
     /**

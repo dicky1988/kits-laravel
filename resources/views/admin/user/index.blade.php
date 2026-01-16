@@ -3,6 +3,8 @@
 @section('content')
     <div class="container-fluid px-3">
 
+        @include('components.breadcrumb', ['breadcrumbs' => $breadcrumbs ?? []])
+
         <div class="card shadow-sm mt-3">
 
             <div class="card-header bg-white border-bottom">
@@ -97,24 +99,53 @@
                     <thead class="table-light">
                     <tr class="text-center">
                         <th width="60">#</th>
-                        <th>Nama</th>
+
+                        <th class="text-start text-center">
+                            <a href="{{ request()->fullUrlWithQuery([
+                                    'sort' => 'name',
+                                    'direction' =>
+                                        ($sort === 'name' && $direction === 'asc') ? 'desc' : 'asc'
+                                ]) }}" class="text-decoration-none text-dark">
+                                Nama
+                                @if($sort === 'name')
+                                    {!! $direction === 'asc' ? '▲' : '▼' !!}
+                                @endif
+                            </a>
+                        </th>
+
                         <th>Email</th>
-                        <th width="180">Tanggal Daftar</th>
+                        <th>NIP</th>
+
+                        {{--<th width="180">Tanggal Daftar</th>--}}
+                        <th width="180" class="text-start text-center">
+                            <a href="{{ request()->fullUrlWithQuery([
+                                    'sort' => 'created_at',
+                                    'direction' =>
+                                        ($sort === 'created_at' && $direction === 'asc') ? 'desc' : 'asc'
+                                ]) }}" class="text-decoration-none text-dark">
+                                Tanggal Daftar
+                                @if($sort === 'created_at')
+                                    {!! $direction === 'asc' ? '▲' : '▼' !!}
+                                @endif
+                            </a>
+                        </th>
                     </tr>
                     </thead>
+
                     <tbody>
                     @forelse($users as $user)
-                        <tr>
+                        <tr class="{{ ($user['is_aktif'] ?? 1) == 0 ? 'table-danger text-muted' : '' }}">
                             <td class="text-center">
                                 {{ (($meta['current_page'] - 1) * $meta['per_page']) + $loop->iteration }}
                             </td>
                             <td>{{ $user['name'] }}</td>
                             <td>{{ $user['email'] }}</td>
-                            <td>{{ \Carbon\Carbon::parse($user['created_at'])->format('d M Y H:i') }}</td>
+                            <td>{{ format_nip($user['nip']) }}</td>
+                            <td>{{ \Carbon\Carbon::parse($user['created_at'])->format('d M Y H:i:s') }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted">
+                            <td colspan="5" class="text-center text-muted">
                                 Tidak ada data
                             </td>
                         </tr>
