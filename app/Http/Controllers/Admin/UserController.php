@@ -18,8 +18,13 @@ class UserController extends Controller
         $perPage = $request->get('per_page', 10);
         $search  = $request->get('search');
 
-        $response = Http::timeout(5)->get(
-            config('api.base_url') . '/api/users',
+        // Ambil token dari .env (pastikan sama dengan token statik di API)
+        $apiToken = env('API_STATIC_TOKEN');
+
+        $response = Http::timeout(5)
+            ->withHeaders([
+                'Authorization' => 'Bearer ' . $apiToken,
+            ])->get(config('api.base_url') . '/api/users',
             [
                 'page' => $page,
                 'per_page' => $perPage,
