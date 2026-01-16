@@ -22,6 +22,11 @@ class UserSeeder extends Seeder
                 'nip_lama' => '201000043',
                 'username' => '198808192010121001',
                 'password' => '$2y$12$v7dtjNpiNE9pciecbR8vOOGGqXc6zaENiMNOTsuZvu/nu9SSrQKyq',
+                'is_ujikom' => 1,
+                'is_sertifikat' => 1,
+                'is_bangkom' => 1,
+                'is_skp' => 1,
+                'is_bidang3' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]

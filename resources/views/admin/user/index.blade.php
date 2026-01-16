@@ -1,5 +1,14 @@
 @extends('layouts.app')
 
+<style>
+    .bg-light-hover:hover {
+        background-color: #f8f9fa;
+    }
+    .cursor-pointer {
+        cursor: pointer;
+    }
+</style>
+
 @section('content')
     <div class="container-fluid px-3">
 
@@ -24,7 +33,7 @@
                             class="btn btn-sm btn-primary"
                             onclick="confirmSync()">
                         <i class="fa fa-sync me-1"></i>
-                        Sinkron TTE
+                        Sinkron User TTE
                     </button>
 
                 </div>
@@ -177,68 +186,8 @@
                                 <div class="p-3">
                                     <div class="row g-3">
 
-                                        {{-- AKSI MODUL --}}
-                                        <div class="col-md-12">
-
-                                            <x-toggle-switch-button
-                                                :user-id="$user['id']"
-                                                :is-active="($user['is_ujikom'] ?? 1) == 1"
-                                                :is-value="($user['is_ujikom'] ?? 1) == 1"
-                                                is-route="{{ route('users.api.activate.ujikom', [
-                                                    $user['id'],$user['is_ujikom']
-                                                ]) }}"
-                                                :is-title="'Modul Ujikom'"
-                                            />
-
-                                            <x-toggle-switch-button
-                                                :user-id="$user['id']"
-                                                :is-active="($user['is_sertifikat'] ?? 1) == 1"
-                                                :is-value="($user['is_sertifikat'] ?? 1) == 1"
-                                                is-route="{{ route('users.api.activate.sertifikat', [
-                                                    $user['id'],$user['is_sertifikat']
-                                                ]) }}"
-                                                :is-title="'Modul Sertifikat'"
-                                            />
-
-                                            <x-toggle-switch-button
-                                                :user-id="$user['id']"
-                                                :is-active="($user['is_bangkom'] ?? 1) == 1"
-                                                :is-value="($user['is_bangkom'] ?? 1) == 1"
-                                                is-route="{{ route('users.api.activate.bangkom', [
-                                                    $user['id'],$user['is_sertifikat']
-                                                ]) }}"
-                                                :is-title="'Modul Bangkom'"
-                                            />
-
-                                            <x-toggle-switch-button
-                                                :user-id="$user['id']"
-                                                :is-active="($user['is_skp'] ?? 1) == 1"
-                                                :is-value="($user['is_skp'] ?? 1) == 1"
-                                                is-route="{{ route('users.api.activate.skp', [
-                                                    $user['id'],$user['is_skp']
-                                                ]) }}"
-                                                :is-title="'Modul SKP'"
-                                            />
-
-                                            <x-toggle-switch-button
-                                                :user-id="$user['id']"
-                                                :is-active="($user['is_bidang3'] ?? 1) == 1"
-                                                :is-value="($user['is_bidang3'] ?? 1) == 1"
-                                                is-route="{{ route('users.api.activate.bidang3', [
-                                                    $user['id'],$user['is_bidang3']
-                                                ]) }}"
-                                                :is-title="'Modul Bidang III'"
-                                            />
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="p-3">
-                                    <div class="row g-3">
-
                                         {{-- STATUS USER --}}
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="border rounded p-3 h-100 bg-white shadow-sm">
                                                 <div class="d-flex align-items-center justify-content-between">
 
@@ -267,7 +216,7 @@
                                         </div>
 
                                         {{-- STATUS SYNC --}}
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="border rounded p-3 h-100 bg-white shadow-sm">
                                                 <div class="d-flex align-items-center justify-content-between">
                                                     <div>
@@ -285,6 +234,92 @@
                                             </div>
                                         </div>
 
+                                        <div class="col-md-4">
+                                            <div class="border rounded p-3 h-100 bg-white shadow-sm">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div>
+                                                        <div class="text-muted small">Role</div>
+                                                        @if(!empty($user['model_has_roles']))
+                                                            @foreach($user['model_has_roles'] as $item)
+                                                                <span class="badge bg-info fs-6 mt-1">
+                                                                    {{ $item['role']['name'] ?? '-' }}
+                                                                </span>
+                                                            @endforeach
+                                                        @else
+                                                            <span class="text-muted">Tidak ada role</span>
+                                                        @endif
+                                                    </div>
+                                                    <i class="fa fa-shield fa-2x text-muted opacity-25"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="p-3">
+                                    <div class="row g-3">
+
+                                        {{-- AKSI MODUL --}}
+                                        <div class="col-md-12">
+
+                                            <div class="border rounded p-3 h-100 bg-white shadow-sm">
+                                                <div class="d-flex align-items-center justify-content-between">
+
+                                                    <x-toggle-switch-button
+                                                        :user-id="$user['id']"
+                                                        :is-active="($user['is_ujikom'] ?? 1) == 1"
+                                                        :is-value="($user['is_ujikom'] ?? 1) == 1"
+                                                        is-route="{{ route('users.api.activate.ujikom', [
+                                                    $user['id'],$user['is_ujikom']
+                                                ]) }}"
+                                                        :is-title="'Modul Ujikom'"
+                                                    />
+
+                                                    <x-toggle-switch-button
+                                                        :user-id="$user['id']"
+                                                        :is-active="($user['is_sertifikat'] ?? 1) == 1"
+                                                        :is-value="($user['is_sertifikat'] ?? 1) == 1"
+                                                        is-route="{{ route('users.api.activate.sertifikat', [
+                                                    $user['id'],$user['is_sertifikat']
+                                                ]) }}"
+                                                        :is-title="'Modul Sertifikat'"
+                                                    />
+
+                                                    <x-toggle-switch-button
+                                                        :user-id="$user['id']"
+                                                        :is-active="($user['is_bangkom'] ?? 1) == 1"
+                                                        :is-value="($user['is_bangkom'] ?? 1) == 1"
+                                                        is-route="{{ route('users.api.activate.bangkom', [
+                                                    $user['id'],$user['is_sertifikat']
+                                                ]) }}"
+                                                        :is-title="'Modul Bangkom'"
+                                                    />
+
+                                                    <x-toggle-switch-button
+                                                        :user-id="$user['id']"
+                                                        :is-active="($user['is_skp'] ?? 1) == 1"
+                                                        :is-value="($user['is_skp'] ?? 1) == 1"
+                                                        is-route="{{ route('users.api.activate.skp', [
+                                                    $user['id'],$user['is_skp']
+                                                ]) }}"
+                                                        :is-title="'Modul SKP'"
+                                                    />
+
+                                                    <x-toggle-switch-button
+                                                        :user-id="$user['id']"
+                                                        :is-active="($user['is_bidang3'] ?? 1) == 1"
+                                                        :is-value="($user['is_bidang3'] ?? 1) == 1"
+                                                        is-route="{{ route('users.api.activate.bidang3', [
+                                                    $user['id'],$user['is_bidang3']
+                                                ]) }}"
+                                                        :is-title="'Modul Bidang III'"
+                                                    />
+
+                                                </div>
+                                            </div>
+
+                                        </div>
                                     </div>
                                 </div>
 
@@ -377,6 +412,70 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="p-3">
+                                    <div class="row g-3">
+
+                                        {{-- AKSES DATA --}}
+                                        <div class="col-md-10">
+                                            <div class="border rounded-3 p-3 bg-white shadow-sm">
+
+                                                <div class="fw-semibold text-muted mb-2">
+                                                    Jenis Surat
+                                                </div>
+
+                                                @php
+                                                    $aksesModul = !empty($user['akses_modul'])
+                                                        ? explode(',', $user['akses_modul'])
+                                                        : [];
+                                                @endphp
+
+                                                @if (count($aksesModul))
+                                                    <div class="d-flex flex-wrap gap-2">
+                                                        @foreach ($aksesModul as $modulId)
+                                                            @if (isset($moduls[$modulId]))
+                                                                <span class="badge rounded-pill bg-light border text-dark px-3 py-2">
+                                                                    <i class="fa fa-cube text-primary me-1"></i>
+                                                                    {{ $moduls[$modulId] }}
+                                                                </span>
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
+                                                @else
+                                                    <div class="text-muted fst-italic">
+                                                        Tidak memiliki akses jenis surat
+                                                    </div>
+                                                @endif
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <div class="border rounded-3 p-3 bg-white shadow-sm h-100
+                                                d-flex flex-column justify-content-center align-items-center">
+
+                                                <button
+                                                    class="btn btn-sm btn-outline-primary"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#modalTambahModul"
+                                                    data-user-id="{{ $user['id'] }}"
+                                                    data-user-name="{{ $user['name'] }}"
+                                                    data-akses-modul="{{ $user['akses_modul'] ?? '' }}"
+                                                >
+                                                    <i class="fa fa-plus"></i>
+                                                    Modul
+                                                </button>
+
+                                                <div class="text-muted small mt-2 text-center">
+                                                    Tambahkan akses jenis surat
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
                             </td>
                         </tr>
                     @empty
@@ -411,6 +510,61 @@
             @csrf
         </form>
 
+    </div>
+
+    <div class="modal fade" id="modalTambahModul" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content rounded-3">
+
+                <div class="modal-header">
+                    <div>
+                        <h5 class="modal-title mb-0">
+                            <i class="fa fa-layer-group text-primary me-1"></i>
+                            Atur Modul Surat
+                        </h5>
+                        <small class="text-muted">
+                            Untuk user:
+                            <span class="badge bg-light text-dark" id="modal-user-name">-</span>
+                        </small>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="hidden" id="modal-user-id">
+
+                    <div class="row g-2">
+
+                        @foreach($moduls as $id => $nama)
+                            <div class="col-md-6">
+                                <label class="d-flex align-items-center gap-2 border rounded px-3 py-2 bg-light-hover cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        class="form-check-input modul-checkbox"
+                                        value="{{ $id }}"
+                                    >
+                                    <span class="fw-medium">{{ $nama }}</span>
+                                </label>
+                            </div>
+                        @endforeach
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">
+                        Tutup
+                    </button>
+                    <button class="btn btn-primary" disabled>
+                        <i class="fa fa-save me-1"></i>
+                        Simpan
+                    </button>
+                </div>
+
+            </div>
+        </div>
     </div>
 @endsection
 
@@ -580,5 +734,41 @@
             });
 
         });
+    </script>
+
+    <script>
+        document.getElementById('modalTambahModul')
+            .addEventListener('show.bs.modal', function (event) {
+
+                const button = event.relatedTarget
+
+                const userId      = button.getAttribute('data-user-id')
+                const userName    = button.getAttribute('data-user-name')
+                const aksesModul  = button.getAttribute('data-akses-modul') || ''
+
+                document.getElementById('modal-user-id').value = userId
+                document.getElementById('modal-user-name').innerText = userName
+
+                // reset semua checkbox
+                document.querySelectorAll('.modul-checkbox').forEach(cb => {
+                    cb.checked = false
+                })
+
+                // 👉 explode string "1,2,3" → array
+                const modulArray = aksesModul
+                    .split(',')
+                    .map(v => v.trim())
+                    .filter(v => v !== '')
+
+                // centang sesuai akses_modul
+                modulArray.forEach(id => {
+                    const checkbox = document.querySelector(
+                        '.modul-checkbox[value="' + id + '"]'
+                    )
+                    if (checkbox) {
+                        checkbox.checked = true
+                    }
+                })
+            })
     </script>
 @endpush

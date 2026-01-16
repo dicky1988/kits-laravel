@@ -18,31 +18,18 @@ class UserSyncService
                 foreach ($tteUsers as $tteUser) {
 
                     $user = User::where('nip_lama', $tteUser->pegawai_id)->first();
-                    $usertte = UserTteNew::where('pegawai_id', $tteUser->pegawai_id)->first();
-                    if($usertte->role == 99) {
-                        $user->syncRoles(['superadmin']);
-                    }
-                    if($usertte->role == 1) {
-                        $user->syncRoles(['struktural']);
-                    }
-                    if($usertte->role == 2) {
-                        $user->syncRoles(['pegawai']);
-                    }
-                    if($usertte->role == 26) {
-                        $user->syncRoles(['sekretaris']);
-                    }
 
                     // ===============================
-                    // JIKA DATA SUDAH ADA
+                    // JIKA USER SUDAH ADA
                     // ===============================
                     if ($user) {
 
-                        // 🚫 Jangan update jika is_sync = 0
+                        // 🚫 Skip jika is_sync = 0
                         if ((int) $user->is_sync === 0) {
                             continue;
                         }
 
-                        // Update data
+                        // Update data user
                         $user->update([
                             'name'           => $tteUser->name,
                             'username'       => $tteUser->nip,
@@ -59,14 +46,47 @@ class UserSyncService
                             'is_aktif'       => $tteUser->is_aktif,
                         ]);
 
+                        // ===============================
+                        // SYNC ROLE (SETELAH USER ADA)
+                        // ===============================
+                        switch ((int) $tteUser->role) {
+
+                            case 99:
+                                if ($tteUser->pegawai_id === 201000043) {
+                                    $user->syncRoles([
+                                        'superadmin',
+                                        'adminapp',
+                                        'user',
+                                        'pegawai',
+                                        'sekretaris',
+                                        'struktural'
+                                    ]);
+                                } else {
+                                    $user->syncRoles(['superadmin']);
+                                }
+                                break;
+
+                            case 1:
+                                $user->syncRoles(['struktural']);
+                                break;
+
+                            case 2:
+                                $user->syncRoles(['pegawai']);
+                                break;
+
+                            case 26:
+                                $user->syncRoles(['sekretaris']);
+                                break;
+                        }
+
                         $count++;
                         continue;
                     }
 
                     // ===============================
-                    // JIKA DATA BELUM ADA → INSERT
+                    // JIKA USER BELUM ADA → CREATE
                     // ===============================
-                    User::create([
+                    $user = User::create([
                         'name'           => $tteUser->name,
                         'username'       => $tteUser->nip,
                         'email'          => $tteUser->email,
@@ -82,8 +102,30 @@ class UserSyncService
                         'is_skp'         => $tteUser->is_skp,
                         'is_bidang3'     => $tteUser->is_bidang3,
                         'is_aktif'       => $tteUser->is_aktif,
-                        //'is_sync'        => 1, // default sync aktif
+                        'is_sync'        => 1,
                     ]);
+
+                    // ===============================
+                    // SYNC ROLE UNTUK USER BARU
+                    // ===============================
+                    switch ((int) $tteUser->role) {
+
+                        case 99:
+                            $user->syncRoles(['superadmin']);
+                            break;
+
+                        case 1:
+                            $user->syncRoles(['struktural']);
+                            break;
+
+                        case 2:
+                            $user->syncRoles(['pegawai']);
+                            break;
+
+                        case 26:
+                            $user->syncRoles(['sekretaris']);
+                            break;
+                    }
 
                     $count++;
                 }

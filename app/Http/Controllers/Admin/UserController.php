@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ModulSurat;
+use App\Services\ModulSuratSyncService;
 use App\Services\UserSyncService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -72,11 +74,15 @@ class UserController extends Controller
             ->get();*/
         //dd($data);
 
+        // Ambil semua modul (id => nama)
+        $moduls = ModulSurat::pluck('nama', 'id');
+
         return view('admin.user.index', [
-            'users'     => $response->json('data'),
-            'meta'      => $response->json('meta'),
-            'sort'      => $sort,
-            'direction' => $direction,
+            'users'       => $response->json('data'),
+            'moduls'      => $moduls,
+            'meta'        => $response->json('meta'),
+            'sort'        => $sort,
+            'direction'   => $direction,
             'breadcrumbs' => $breadcrumbs,
         ]);
     }
@@ -84,6 +90,7 @@ class UserController extends Controller
     public function sync(): RedirectResponse
     {
         $total = UserSyncService::syncByNipLama();
+        $modul = ModulSuratSyncService::syncByAll();
         return redirect()
             ->route('users.index')
             ->with('success', "Sinkronisasi berhasil. {$total} data diproses.");
