@@ -44,4 +44,15 @@ Route::middleware(['auth'])->patch('/users/{id}/activate/sync', [UserController:
 Route::middleware(['auth'])->patch('/users/{id}/deactivate/sync', [UserController::class, 'deactivateSyncViaApi'])
     ->name('users.api.deactivate.sync');
 
+Route::middleware(['auth'])->patch('/users/{id}/activate/ujikom/{value}', [UserController::class, 'activateUjikomViaApi'])
+    ->name('users.api.activate.ujikom');
+Route::middleware(['auth'])->patch('/users/{id}/activate/sertifikat/{value}', [UserController::class, 'activateSertifikatViaApi'])
+    ->name('users.api.activate.sertifikat');
+Route::middleware(['auth'])->patch('/users/{id}/activate/bangkom/{value}', [UserController::class, 'activateBangkomViaApi'])
+    ->name('users.api.activate.bangkom');
+Route::middleware(['auth'])->patch('/users/{id}/activate/skp/{value}', [UserController::class, 'activateSkpViaApi'])
+    ->name('users.api.activate.skp');
+Route::middleware(['auth'])->patch('/users/{id}/activate/bidang3/{value}', [UserController::class, 'activateBidang3ViaApi'])
+    ->name('users.api.activate.bidang3');
+
 require __DIR__.'/auth.php';

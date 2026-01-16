@@ -138,4 +138,64 @@ class UserController extends Controller
 
         return back()->with('success', 'User Sync berhasil dinonaktifkan');
     }
+
+    public function activateUjikomViaApi($id, $value)
+    {
+        $response = $this->api()
+            ->patch(config('api.base_url') . "/api/users/{$id}/activate/ujikom/{$value}");
+
+        if ($response->failed()) {
+            return back()->withErrors('Gagal mengaktifkan modul ujikom');
+        }
+
+        return back()->with('success', 'Berhasil mengaktifkan modul ujikom');
+    }
+
+    public function activateSertifikatViaApi($id, $value)
+    {
+        $response = $this->api()
+            ->patch(config('api.base_url') . "/api/users/{$id}/activate/sertifikat/{$value}");
+
+        if ($response->failed()) {
+            return back()->withErrors('Gagal mengaktifkan modul sertifikat');
+        }
+
+        return back()->with('success', 'Berhasil mengaktifkan modul sertifikat');
+    }
+
+    public function activateBangkomViaApi($id, $value)
+    {
+        $response = $this->api()
+            ->patch(config('api.base_url') . "/api/users/{$id}/activate/bangkom/{$value}");
+
+        if ($response->failed()) {
+            return back()->withErrors('Gagal mengaktifkan modul bangkom');
+        }
+
+        return back()->with('success', 'Berhasil mengaktifkan modul bangkom');
+    }
+
+    public function activateSkpViaApi($id, $value)
+    {
+        $response = $this->api()
+            ->patch(config('api.base_url') . "/api/users/{$id}/activate/skp/{$value}");
+
+        if ($response->failed()) {
+            return back()->withErrors('Gagal mengaktifkan modul skp');
+        }
+
+        return back()->with('success', 'Berhasil mengaktifkan modul skp');
+    }
+
+    public function activateBidang3ViaApi($id, $value)
+    {
+        $response = $this->api()
+            ->patch(config('api.base_url') . "/api/users/{$id}/activate/bidang3/{$value}");
+
+        if ($response->failed()) {
+            return back()->withErrors('Gagal mengaktifkan modul bidang 3');
+        }
+
+        return back()->with('success', 'Berhasil mengaktifkan modul bidang 3');
+    }
 }

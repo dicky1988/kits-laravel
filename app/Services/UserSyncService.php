@@ -18,6 +18,19 @@ class UserSyncService
                 foreach ($tteUsers as $tteUser) {
 
                     $user = User::where('nip_lama', $tteUser->pegawai_id)->first();
+                    $usertte = UserTteNew::where('pegawai_id', $tteUser->pegawai_id)->first();
+                    if($usertte->role == 99) {
+                        $user->syncRoles(['superadmin']);
+                    }
+                    if($usertte->role == 1) {
+                        $user->syncRoles(['struktural']);
+                    }
+                    if($usertte->role == 2) {
+                        $user->syncRoles(['pegawai']);
+                    }
+                    if($usertte->role == 26) {
+                        $user->syncRoles(['sekretaris']);
+                    }
 
                     // ===============================
                     // JIKA DATA SUDAH ADA

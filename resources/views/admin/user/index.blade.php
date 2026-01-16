@@ -173,6 +173,67 @@
                         {{-- ROW DETAIL (COLLAPSE) --}}
                         <tr class="collapse bg-light" id="detail-{{ $user['id'] }}">
                             <td colspan="8">
+
+                                <div class="p-3">
+                                    <div class="row g-3">
+
+                                        {{-- AKSI MODUL --}}
+                                        <div class="col-md-12">
+
+                                            <x-toggle-switch-button
+                                                :user-id="$user['id']"
+                                                :is-active="($user['is_ujikom'] ?? 1) == 1"
+                                                :is-value="($user['is_ujikom'] ?? 1) == 1"
+                                                is-route="{{ route('users.api.activate.ujikom', [
+                                                    $user['id'],$user['is_ujikom']
+                                                ]) }}"
+                                                :is-title="'Modul Ujikom'"
+                                            />
+
+                                            <x-toggle-switch-button
+                                                :user-id="$user['id']"
+                                                :is-active="($user['is_sertifikat'] ?? 1) == 1"
+                                                :is-value="($user['is_sertifikat'] ?? 1) == 1"
+                                                is-route="{{ route('users.api.activate.sertifikat', [
+                                                    $user['id'],$user['is_sertifikat']
+                                                ]) }}"
+                                                :is-title="'Modul Sertifikat'"
+                                            />
+
+                                            <x-toggle-switch-button
+                                                :user-id="$user['id']"
+                                                :is-active="($user['is_bangkom'] ?? 1) == 1"
+                                                :is-value="($user['is_bangkom'] ?? 1) == 1"
+                                                is-route="{{ route('users.api.activate.bangkom', [
+                                                    $user['id'],$user['is_sertifikat']
+                                                ]) }}"
+                                                :is-title="'Modul Bangkom'"
+                                            />
+
+                                            <x-toggle-switch-button
+                                                :user-id="$user['id']"
+                                                :is-active="($user['is_skp'] ?? 1) == 1"
+                                                :is-value="($user['is_skp'] ?? 1) == 1"
+                                                is-route="{{ route('users.api.activate.skp', [
+                                                    $user['id'],$user['is_skp']
+                                                ]) }}"
+                                                :is-title="'Modul SKP'"
+                                            />
+
+                                            <x-toggle-switch-button
+                                                :user-id="$user['id']"
+                                                :is-active="($user['is_bidang3'] ?? 1) == 1"
+                                                :is-value="($user['is_bidang3'] ?? 1) == 1"
+                                                is-route="{{ route('users.api.activate.bidang3', [
+                                                    $user['id'],$user['is_bidang3']
+                                                ]) }}"
+                                                :is-title="'Modul Bidang III'"
+                                            />
+
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="p-3">
                                     <div class="row g-3">
 
@@ -180,6 +241,7 @@
                                         <div class="col-md-6">
                                             <div class="border rounded p-3 h-100 bg-white shadow-sm">
                                                 <div class="d-flex align-items-center justify-content-between">
+
                                                     <div>
                                                         <div class="text-muted small">Status User</div>
                                                         {!! ($user['is_aktif'] ?? 1)
@@ -190,7 +252,16 @@
                                                                     <i class="fa fa-user-slash me-1"></i> Nonaktif
                                                                </span>' !!}
                                                     </div>
-                                                    <i class="fa fa-user fa-2x text-muted opacity-25"></i>
+
+                                                    {{-- FOTO USER --}}
+                                                    <img
+                                                        data-src="{{ url('https://map.bpkp.go.id/api/v1/dms/foto?niplama=' . ($user['nip_lama'] ?? '')) }}"
+                                                        src="{{ asset('images/user-placeholder.png') }}"
+                                                        alt="Foto User"
+                                                        class="rounded-circle shadow-sm user-photo"
+                                                        style="width:48px;height:48px;object-fit:cover;"
+                                                    >
+
                                                 </div>
                                             </div>
                                         </div>
@@ -214,6 +285,96 @@
                                             </div>
                                         </div>
 
+                                    </div>
+                                </div>
+
+                                <div class="p-3">
+                                    <div class="row g-3">
+                                        <div class="col-md-2">
+                                            <div class="border rounded p-3 h-100 bg-white shadow-sm">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div>
+                                                        <div class="text-muted small">Module Ujikom</div>
+                                                        {!! ($user['is_ujikom'] ?? 1)
+                                                            ? '<span class="badge bg-primary fs-6 mt-1">
+                                                                    <i class="fa fa-check-circle me-1"></i> Aktif
+                                                               </span>'
+                                                            : '<span class="badge bg-secondary fs-6 mt-1">
+                                                                    <i class="fa fa-ban me-1"></i> Nonaktif
+                                                               </span>' !!}
+                                                    </div>
+                                                    <i class="fa fa-check fa-2x text-muted opacity-25"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="border rounded p-3 h-100 bg-white shadow-sm">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div>
+                                                        <div class="text-muted small">Module Sertifikat</div>
+                                                        {!! ($user['is_sertifikat'] ?? 1)
+                                                            ? '<span class="badge bg-primary fs-6 mt-1">
+                                                                    <i class="fa fa-check-circle me-1"></i> Aktif
+                                                               </span>'
+                                                            : '<span class="badge bg-secondary fs-6 mt-1">
+                                                                    <i class="fa fa-ban me-1"></i> Nonaktif
+                                                               </span>' !!}
+                                                    </div>
+                                                    <i class="fa fa-check fa-2x text-muted opacity-25"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="border rounded p-3 h-100 bg-white shadow-sm">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div>
+                                                        <div class="text-muted small">Module Bangkom</div>
+                                                        {!! ($user['is_bangkom'] ?? 1)
+                                                            ? '<span class="badge bg-primary fs-6 mt-1">
+                                                                    <i class="fa fa-check-circle me-1"></i> Aktif
+                                                               </span>'
+                                                            : '<span class="badge bg-secondary fs-6 mt-1">
+                                                                    <i class="fa fa-ban me-1"></i> Nonaktif
+                                                               </span>' !!}
+                                                    </div>
+                                                    <i class="fa fa-check fa-2x text-muted opacity-25"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="border rounded p-3 h-100 bg-white shadow-sm">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div>
+                                                        <div class="text-muted small">Module SKP</div>
+                                                        {!! ($user['is_skp'] ?? 1)
+                                                            ? '<span class="badge bg-primary fs-6 mt-1">
+                                                                    <i class="fa fa-check-circle me-1"></i> Aktif
+                                                               </span>'
+                                                            : '<span class="badge bg-secondary fs-6 mt-1">
+                                                                    <i class="fa fa-ban me-1"></i> Nonaktif
+                                                               </span>' !!}
+                                                    </div>
+                                                    <i class="fa fa-check fa-2x text-muted opacity-25"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="border rounded p-3 h-100 bg-white shadow-sm">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div>
+                                                        <div class="text-muted small">Module Bidang III</div>
+                                                        {!! ($user['is_bidang3'] ?? 1)
+                                                            ? '<span class="badge bg-primary fs-6 mt-1">
+                                                                    <i class="fa fa-check-circle me-1"></i> Aktif
+                                                               </span>'
+                                                            : '<span class="badge bg-secondary fs-6 mt-1">
+                                                                    <i class="fa fa-ban me-1"></i> Nonaktif
+                                                               </span>' !!}
+                                                    </div>
+                                                    <i class="fa fa-check fa-2x text-muted opacity-25"></i>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </td>
@@ -346,7 +507,8 @@
             }, 150);
         }
     </script>
-    <script>
+
+    {{--<script>
         document.addEventListener('DOMContentLoaded', function () {
 
             document.querySelectorAll('.collapse').forEach(function (collapseEl) {
@@ -369,6 +531,50 @@
                         icon.classList.remove('fa-minus');
                         icon.classList.add('fa-plus');
                     }
+                });
+
+            });
+
+        });
+    </script>--}}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            document.querySelectorAll('.collapse').forEach(function (collapseEl) {
+
+                collapseEl.addEventListener('shown.bs.collapse', function () {
+
+                    const id = collapseEl.id.replace('detail-', '');
+
+                    // === TOGGLE ICON ===
+                    const icon = document.getElementById('icon-' + id);
+                    if (icon) {
+                        icon.classList.remove('fa-plus');
+                        icon.classList.add('fa-minus');
+                    }
+
+                    // === LAZY LOAD FOTO ===
+                    collapseEl.querySelectorAll('img[data-src]').forEach(function (img) {
+                        if (!img.dataset.loaded) {
+                            img.src = img.dataset.src;
+                            img.dataset.loaded = 'true';
+                        }
+                    });
+
+                });
+
+                collapseEl.addEventListener('hidden.bs.collapse', function () {
+
+                    const id = collapseEl.id.replace('detail-', '');
+
+                    // === TOGGLE ICON ===
+                    const icon = document.getElementById('icon-' + id);
+                    if (icon) {
+                        icon.classList.remove('fa-minus');
+                        icon.classList.add('fa-plus');
+                    }
+
                 });
 
             });
