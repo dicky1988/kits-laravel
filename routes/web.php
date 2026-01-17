@@ -56,6 +56,9 @@ Route::middleware(['auth'])->patch('/users/{id}/activate/skp/{value}', [UserCont
 Route::middleware(['auth'])->patch('/users/{id}/activate/bidang3/{value}', [UserController::class, 'activateBidang3ViaApi'])
     ->name('users.api.activate.bidang3');
 
+Route::middleware(['auth'])->patch('/users/{id}/akses/modul/update', [UserController::class, 'updateAksesModulViaApi'])
+    ->name('users.api.akses.modul.update');
+
 Route::middleware(['auth', 'active.permission:menu.referensi'])
     ->prefix('modulsurat')
     ->name('modulsurat.')

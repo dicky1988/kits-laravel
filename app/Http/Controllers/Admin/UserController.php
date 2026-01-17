@@ -205,4 +205,29 @@ class UserController extends Controller
 
         return back()->with('success', 'Berhasil ' . (($value == 1) ? 'mengaktifkan' : 'menonaktifkan') . ' modul bidang 3');
     }
+
+    public function updateAksesModulViaApi(Request $request, int $id)
+    {
+        // akses_modul dikirim dari frontend (string: "1,2,3")
+        $payload = [
+            'akses_modul' => $request->input('akses_modul'),
+        ];
+
+        $response = $this->api()->patch(
+            config('api.base_url') . "/api/users/{$id}/akses/modul",
+            $payload
+        );
+
+        if ($response->failed()) {
+            return response()->json([
+                'success' => false,
+                'message' => $response->json('message') ?? 'Gagal menyimpan akses modul',
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Akses modul berhasil diperbarui',
+        ]);
+    }
 }

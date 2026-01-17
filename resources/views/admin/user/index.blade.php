@@ -534,8 +534,17 @@
 
                     <input type="hidden" id="modal-user-id">
 
-                    <div class="row g-2">
+                    {{-- SELECT ALL --}}
+                    <div class="mb-3">
+                        <label class="d-flex align-items-center gap-2 fw-semibold cursor-pointer">
+                            <input type="checkbox" class="form-check-input" id="checkbox-select-all">
+                            <span>Pilih Semua Modul</span>
+                        </label>
+                    </div>
 
+                    <hr class="my-2">
+
+                    <div class="row g-2">
                         @foreach($moduls as $id => $nama)
                             <div class="col-md-6">
                                 <label class="d-flex align-items-center gap-2 border rounded px-3 py-2 bg-light-hover cursor-pointer">
@@ -548,7 +557,6 @@
                                 </label>
                             </div>
                         @endforeach
-
                     </div>
 
                 </div>
@@ -557,7 +565,7 @@
                     <button class="btn btn-secondary" data-bs-dismiss="modal">
                         Tutup
                     </button>
-                    <button class="btn btn-primary" disabled>
+                    <button class="btn btn-primary" id="btn-simpan-modul">
                         <i class="fa fa-save me-1"></i>
                         Simpan
                     </button>
@@ -742,19 +750,19 @@
 
                 const button = event.relatedTarget
 
-                const userId      = button.getAttribute('data-user-id')
-                const userName    = button.getAttribute('data-user-name')
-                const aksesModul  = button.getAttribute('data-akses-modul') || ''
+                const userId     = button.getAttribute('data-user-id')
+                const userName   = button.getAttribute('data-user-name')
+                const aksesModul = button.getAttribute('data-akses-modul') || ''
 
                 document.getElementById('modal-user-id').value = userId
                 document.getElementById('modal-user-name').innerText = userName
 
-                // reset semua checkbox
+                // reset semua checkbox modul
                 document.querySelectorAll('.modul-checkbox').forEach(cb => {
                     cb.checked = false
                 })
 
-                // 👉 explode string "1,2,3" → array
+                // explode "1,2,3" → array
                 const modulArray = aksesModul
                     .split(',')
                     .map(v => v.trim())
@@ -769,6 +777,94 @@
                         checkbox.checked = true
                     }
                 })
+
+                // ✅ INI POSISI YANG BENAR (PALING BAWAH)
+                const allChecked =
+                    document.querySelectorAll('.modul-checkbox:checked').length ===
+                    document.querySelectorAll('.modul-checkbox').length
+
+                document.getElementById('checkbox-select-all').checked = allChecked
+            })
+    </script>
+    <script>
+        const btnSimpan = document.getElementById('btn-simpan-modul')
+
+        btnSimpan.addEventListener('click', function () {
+
+            const userId = document.getElementById('modal-user-id').value
+
+            // ambil semua checkbox yang dicentang
+            const selected = Array.from(
+                document.querySelectorAll('.modul-checkbox:checked')
+            ).map(cb => cb.value)
+
+            btnSimpan.disabled = true
+            btnSimpan.innerHTML = '<i class="fa fa-spinner fa-spin me-1"></i>Menyimpan...'
+
+            fetch(`{{ route('users.api.akses.modul.update', ':id') }}`.replace(':id', userId), {
+                method: 'PATCH',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    akses_modul: selected.join(',')
+                })
+            })
+                .then(async res => {
+                    if (!res.ok) {
+                        const err = await res.json()
+                        throw new Error(err.message || 'Gagal menyimpan data')
+                    }
+                    return res.json()
+                })
+                .then(res => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: res.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        location.reload()
+                    })
+                })
+                .catch(err => {
+                    Swal.fire('Error', err.message, 'error')
+                })
+                .finally(() => {
+                    btnSimpan.disabled = false
+                    btnSimpan.innerHTML = '<i class="fa fa-save me-1"></i>Simpan'
+                })
+        })
+    </script>
+    <script>
+        const selectAllCheckbox = document.getElementById('checkbox-select-all')
+
+        // klik "Pilih Semua"
+        selectAllCheckbox.addEventListener('change', function () {
+            const checked = this.checked
+
+            document.querySelectorAll('.modul-checkbox').forEach(cb => {
+                cb.checked = checked
+            })
+        })
+
+        // sinkronkan select all jika user klik manual modul
+        document.querySelectorAll('.modul-checkbox').forEach(cb => {
+            cb.addEventListener('change', function () {
+                const allChecked = document.querySelectorAll('.modul-checkbox:checked').length
+                    === document.querySelectorAll('.modul-checkbox').length
+
+                selectAllCheckbox.checked = allChecked
+            })
+        })
+
+        // reset ketika modal dibuka
+        document.getElementById('modalTambahModul')
+            .addEventListener('show.bs.modal', function () {
+                selectAllCheckbox.checked = false
             })
     </script>
 @endpush
