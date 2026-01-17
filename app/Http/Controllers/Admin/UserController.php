@@ -149,7 +149,7 @@ class UserController extends Controller
     public function activateUjikomViaApi($id, $value)
     {
         $response = $this->api()
-            ->patch(config('api.base_url') . "/api/users/{$id}/activate/ujikom/{$value}");
+            ->patch(config('api.base_url') . "/api/users/{$id}/activate/modul/{$value}/is_ujikom");
 
         if ($response->failed()) {
             return back()->withErrors('Gagal mengaktifkan modul ujikom');
@@ -161,7 +161,7 @@ class UserController extends Controller
     public function activateSertifikatViaApi($id, $value)
     {
         $response = $this->api()
-            ->patch(config('api.base_url') . "/api/users/{$id}/activate/sertifikat/{$value}");
+            ->patch(config('api.base_url') . "/api/users/{$id}/activate/modul/{$value}/is_sertifikat");
 
         if ($response->failed()) {
             return back()->withErrors('Gagal mengaktifkan modul sertifikat');
@@ -173,7 +173,7 @@ class UserController extends Controller
     public function activateBangkomViaApi($id, $value)
     {
         $response = $this->api()
-            ->patch(config('api.base_url') . "/api/users/{$id}/activate/bangkom/{$value}");
+            ->patch(config('api.base_url') . "/api/users/{$id}/activate/modul/{$value}/is_bangkom");
 
         if ($response->failed()) {
             return back()->withErrors('Gagal mengaktifkan modul bangkom');
@@ -185,7 +185,7 @@ class UserController extends Controller
     public function activateSkpViaApi($id, $value)
     {
         $response = $this->api()
-            ->patch(config('api.base_url') . "/api/users/{$id}/activate/skp/{$value}");
+            ->patch(config('api.base_url') . "/api/users/{$id}/activate/modul/{$value}/is_skp");
 
         if ($response->failed()) {
             return back()->withErrors('Gagal mengaktifkan modul skp');
@@ -197,7 +197,7 @@ class UserController extends Controller
     public function activateBidang3ViaApi($id, $value)
     {
         $response = $this->api()
-            ->patch(config('api.base_url') . "/api/users/{$id}/activate/bidang3/{$value}");
+            ->patch(config('api.base_url') . "/api/users/{$id}/activate/modul/{$value}/is_bidang3");
 
         if ($response->failed()) {
             return back()->withErrors('Gagal mengaktifkan modul bidang 3');

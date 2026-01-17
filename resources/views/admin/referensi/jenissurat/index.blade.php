@@ -111,7 +111,7 @@
                         <th class="text-center">Nama</th>
                         <th width="60" class="text-center">Ikon</th>
                         <th width="60" class="text-center">Warna</th>
-                        <th width="60" class="text-center">Status</th>
+                        <th style="width: 10%" class="text-center">Status</th>
                         <th width="120" class="text-center">Aksi</th>
                     </tr>
                     </thead>
@@ -131,7 +131,7 @@
                                 </span>
                             </td>
                             <td class="text-center">
-                                @if($jenissurat['is_aktif'])
+                                {{--@if($jenissurat['is_aktif'])
                                     <span class="badge bg-success">
                                         <i class="fa fa-check-circle me-1"></i> Aktif
                                     </span>
@@ -139,7 +139,18 @@
                                     <span class="badge bg-secondary">
                                         <i class="fa fa-times-circle me-1"></i> Tidak Aktif
                                     </span>
-                                @endif
+                                @endif--}}
+
+                                    <x-toggle-switch-button
+                                        :user-id="$jenissurat['id']"
+                                        :is-active="($jenissurat['is_aktif'] ?? 1) == 1"
+                                        :is-value="($jenissurat['is_aktif'] ?? 1) == 1"
+                                        is-route="{{ route('users.api.activate.ujikom', [
+                                                    $jenissurat['id'],$jenissurat['is_aktif']
+                                                ]) }}"
+                                        :is-title="''"
+                                    />
+
                             </td>
                             <td class="text-center">
                                 <button class="btn btn-sm btn-outline-warning me-1"
