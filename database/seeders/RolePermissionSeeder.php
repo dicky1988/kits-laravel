@@ -25,6 +25,7 @@ class RolePermissionSeeder extends Seeder
             'menu.setting',
             'menu.admin',
             'menu.referensi',
+            'menu.referensi.jenissurat',
         ];
 
         foreach ($permissions as $perm) {

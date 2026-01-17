@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('nomor_pj')->nullable();
             $table->integer('is_aktif')->default(1);
             $table->timestamps();
+
+            // ✅ Soft Delete
+            $table->softDeletes(); // adds deleted_at
         });
     }
 

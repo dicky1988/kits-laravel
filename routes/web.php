@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\SwitchRoleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ModulSuratController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -54,5 +55,17 @@ Route::middleware(['auth'])->patch('/users/{id}/activate/skp/{value}', [UserCont
     ->name('users.api.activate.skp');
 Route::middleware(['auth'])->patch('/users/{id}/activate/bidang3/{value}', [UserController::class, 'activateBidang3ViaApi'])
     ->name('users.api.activate.bidang3');
+
+Route::middleware(['auth', 'active.permission:menu.referensi'])
+    ->prefix('modulsurat')
+    ->name('modulsurat.')
+    ->group(function () {
+
+        Route::get('/', [ModulSuratController::class, 'index'])->name('index');
+        Route::post('/', [ModulSuratController::class, 'store'])->name('store');
+        Route::put('/{id}', [ModulSuratController::class, 'update'])->name('update');
+        Route::delete('/{id}', [ModulSuratController::class, 'destroy'])->name('destroy');
+
+    });
 
 require __DIR__.'/auth.php';

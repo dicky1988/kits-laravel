@@ -46,9 +46,9 @@ class MenuSeeder extends Seeder
         Menu::create([
             'title' => 'Jenis Surat',
             'icon' => 'fas fa-file-alt', // ganti menjadi icon dokumen
-            'route' => 'users.index',
+            'route' => 'modulsurat.index',
             'parent_id' => $referensi->id,
-            'permission' => 'menu.referensi',
+            'permission' => 'menu.referensi.jenissurat',
         ]);
 
     }
