@@ -291,7 +291,7 @@
                                                         :is-active="($user['is_bangkom'] ?? 1) == 1"
                                                         :is-value="($user['is_bangkom'] ?? 1) == 1"
                                                         is-route="{{ route('users.api.activate.bangkom', [
-                                                    $user['id'],$user['is_sertifikat']
+                                                    $user['id'],$user['is_bangkom']
                                                 ]) }}"
                                                         :is-title="'Modul Bangkom'"
                                                     />

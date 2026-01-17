@@ -152,10 +152,10 @@ class UserController extends Controller
             ->patch(config('api.base_url') . "/api/users/{$id}/activate/modul/{$value}/is_ujikom");
 
         if ($response->failed()) {
-            return back()->withErrors('Gagal mengaktifkan modul ujikom');
+            return back()->withErrors('Gagal ' . (($value == 1) ? 'mengaktifkan' : 'menonaktifkan') . ' modul ujikom');
         }
 
-        return back()->with('success', 'Berhasil mengaktifkan modul ujikom');
+        return back()->with('success', 'Berhasil ' . (($value == 1) ? 'mengaktifkan' : 'menonaktifkan') . ' modul ujikom');
     }
 
     public function activateSertifikatViaApi($id, $value)
@@ -164,10 +164,10 @@ class UserController extends Controller
             ->patch(config('api.base_url') . "/api/users/{$id}/activate/modul/{$value}/is_sertifikat");
 
         if ($response->failed()) {
-            return back()->withErrors('Gagal mengaktifkan modul sertifikat');
+            return back()->withErrors('Gagal ' . (($value == 1) ? 'mengaktifkan' : 'menonaktifkan') . ' modul sertifikat');
         }
 
-        return back()->with('success', 'Berhasil mengaktifkan modul sertifikat');
+        return back()->with('success', 'Berhasil ' . (($value == 1) ? 'mengaktifkan' : 'menonaktifkan') . ' modul sertifikat');
     }
 
     public function activateBangkomViaApi($id, $value)
@@ -176,10 +176,10 @@ class UserController extends Controller
             ->patch(config('api.base_url') . "/api/users/{$id}/activate/modul/{$value}/is_bangkom");
 
         if ($response->failed()) {
-            return back()->withErrors('Gagal mengaktifkan modul bangkom');
+            return back()->withErrors('Gagal ' . (($value == 1) ? 'mengaktifkan' : 'menonaktifkan') . ' modul bangkom');
         }
 
-        return back()->with('success', 'Berhasil mengaktifkan modul bangkom');
+        return back()->with('success', 'Berhasil ' . (($value == 1) ? 'mengaktifkan' : 'menonaktifkan') . ' modul bangkom');
     }
 
     public function activateSkpViaApi($id, $value)
@@ -188,10 +188,10 @@ class UserController extends Controller
             ->patch(config('api.base_url') . "/api/users/{$id}/activate/modul/{$value}/is_skp");
 
         if ($response->failed()) {
-            return back()->withErrors('Gagal mengaktifkan modul skp');
+            return back()->withErrors('Gagal ' . (($value == 1) ? 'mengaktifkan' : 'menonaktifkan') . ' modul skp');
         }
 
-        return back()->with('success', 'Berhasil mengaktifkan modul skp');
+        return back()->with('success', 'Berhasil ' . (($value == 1) ? 'mengaktifkan' : 'menonaktifkan') . ' modul skp');
     }
 
     public function activateBidang3ViaApi($id, $value)
@@ -200,9 +200,9 @@ class UserController extends Controller
             ->patch(config('api.base_url') . "/api/users/{$id}/activate/modul/{$value}/is_bidang3");
 
         if ($response->failed()) {
-            return back()->withErrors('Gagal mengaktifkan modul bidang 3');
+            return back()->withErrors('Gagal ' . (($value == 1) ? 'mengaktifkan' : 'menonaktifkan') . ' modul bidang 3');
         }
 
-        return back()->with('success', 'Berhasil mengaktifkan modul bidang 3');
+        return back()->with('success', 'Berhasil ' . (($value == 1) ? 'mengaktifkan' : 'menonaktifkan') . ' modul bidang 3');
     }
 }
