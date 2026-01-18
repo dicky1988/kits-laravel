@@ -6,6 +6,8 @@ use App\Http\Controllers\Auth\SwitchRoleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ModulSuratController;
+use App\Http\Controllers\Ttesurat\Monitoring\MonitoringController;
+use App\Http\Controllers\Admin\PegawaiController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -68,6 +70,27 @@ Route::middleware(['auth', 'active.permission:menu.referensi'])
         Route::post('/', [ModulSuratController::class, 'store'])->name('store');
         Route::put('/{id}', [ModulSuratController::class, 'update'])->name('update');
         Route::delete('/{id}', [ModulSuratController::class, 'destroy'])->name('destroy');
+
+    });
+
+Route::middleware(['auth', 'active.permission:menu.referensi'])
+    ->prefix('pegawai')
+    ->name('pegawai.')
+    ->group(function () {
+
+        Route::get('/', [PegawaiController::class, 'index'])->name('index');
+        //Route::post('/', [PegawaiController::class, 'store'])->name('store');
+        //Route::put('/{id}', [PegawaiController::class, 'update'])->name('update');
+        //Route::delete('/{id}', [PegawaiController::class, 'destroy'])->name('destroy');
+
+    });
+
+Route::middleware(['auth', 'active.permission:menu.ttesurat'])
+    ->prefix('monitoring')
+    ->name('monitoring.')
+    ->group(function () {
+
+        Route::get('/', [MonitoringController::class, 'index'])->name('index');
 
     });
 

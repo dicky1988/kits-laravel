@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ModulSurat;
 use App\Services\ModulSuratSyncService;
+use App\Services\PegawaiSyncService;
+use App\Services\TteSyncService;
 use App\Services\UserSyncService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -91,9 +93,11 @@ class UserController extends Controller
     {
         $total = UserSyncService::syncByNipLama();
         $modul = ModulSuratSyncService::syncByAll();
+        $pegawai = PegawaiSyncService::syncByAll();
+        $tte = TteSyncService::syncByAll();
         return redirect()
             ->route('users.index')
-            ->with('success', "Sinkronisasi berhasil. {$total} data diproses.");
+            ->with('success', "Sinkronisasi berhasil. {$total}-{$modul}-{$pegawai}-{$tte} data diproses.");
         //return back()->with('success', "Sinkronisasi berhasil: {$total} data diproses");
     }
 
