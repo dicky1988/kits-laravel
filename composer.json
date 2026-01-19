@@ -30,7 +30,8 @@
         },
         "files": [
             "app/Helpers/ActiveRolePermission.php",
-            "app/Helpers/FormatHelper.php"
+            "app/Helpers/FormatHelper.php",
+            "app/Helpers/BaseHelper.php"
         ]
     },
     "autoload-dev": {

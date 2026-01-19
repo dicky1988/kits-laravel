@@ -74,5 +74,13 @@ class MenuSeeder extends Seeder
             'permission' => 'menu.ttesurat.monitoring',
         ]);
 
+        Menu::create([
+            'title' => 'Arsip',
+            'icon' => 'fas fa-file-archive', // monitoring / tracking
+            'route' => 'arsip.index',
+            'parent_id' => $ttesurat->id,
+            'permission' => 'menu.ttesurat.arsip',
+        ]);
+
     }
 }

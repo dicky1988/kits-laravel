@@ -108,7 +108,21 @@
                     <thead class="table-light">
                     <tr class="text-center">
                         <th width="60" class="text-center">#</th>
-                        <th class="text-center">Nama</th>
+
+                        {{--<th class="text-center">Nama</th>--}}
+                        <th class="text-start text-center">
+                            <a href="{{ request()->fullUrlWithQuery([
+                                    'sort' => 'nama',
+                                    'direction' =>
+                                        ($sort === 'nama' && $direction === 'asc') ? 'desc' : 'asc'
+                                ]) }}" class="text-decoration-none text-dark">
+                                Nama
+                                @if($sort === 'nama')
+                                    {!! $direction === 'asc' ? '▲' : '▼' !!}
+                                @endif
+                            </a>
+                        </th>
+
                         <th width="60" class="text-center">Ikon</th>
                         <th width="60" class="text-center">Warna</th>
                         <th style="width: 10%" class="text-center">Status</th>

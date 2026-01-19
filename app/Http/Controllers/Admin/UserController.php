@@ -95,9 +95,11 @@ class UserController extends Controller
         $modul = ModulSuratSyncService::syncByAll();
         $pegawai = PegawaiSyncService::syncByAll();
         $tte = TteSyncService::syncByAll();
+        $ttereviewers = TteSyncService::syncByAllReviewers();
+        $ttereviews = TteSyncService::syncByAllReviews();
         return redirect()
             ->route('users.index')
-            ->with('success', "Sinkronisasi berhasil. {$total}-{$modul}-{$pegawai}-{$tte} data diproses.");
+            ->with('success', "Sinkronisasi berhasil. {$total}-{$modul}-{$pegawai}-{$tte}-{$ttereviewers}-{$ttereviews} data diproses.");
         //return back()->with('success', "Sinkronisasi berhasil: {$total} data diproses");
     }
 

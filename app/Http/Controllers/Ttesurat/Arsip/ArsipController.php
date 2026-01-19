@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Ttesurat\Monitoring;
+namespace App\Http\Controllers\Ttesurat\Arsip;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
-class MonitoringController extends Controller
+class ArsipController extends Controller
 {
     private function api()
     {

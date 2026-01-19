@@ -3,6 +3,10 @@
 namespace App\Services;
 
 use App\Models\SuratTte;
+use App\Models\SuratTteReviewers;
+use App\Models\SuratTteReviewersTteNew;
+use App\Models\SuratTteReviews;
+use App\Models\SuratTteReviewsTteNew;
 use App\Models\TteNew;
 
 class TteSyncService
@@ -59,6 +63,131 @@ class TteSyncService
                 SuratTte::create(array_merge([
                     'id' => $tteNew->id,
                 ], $payload));
+
+                $count++;
+            }
+        });
+
+        return $count;
+    }
+
+    /**
+     * Sinkronisasi seluruh data reviewer surat TTE
+     * dari DB tte_new → DB utama
+     *
+     * @return int jumlah data yang diproses
+     */
+    public static function syncByAllReviewers(): int
+    {
+        $count = 0;
+
+        SuratTteReviewersTteNew::chunk(100, function ($reviewers) use (&$count) {
+
+            foreach ($reviewers as $reviewerNew) {
+
+                // ===============================
+                // VALIDASI TTE_ID HARUS ADA
+                // ===============================
+                $existsTte = SuratTte::where('id', $reviewerNew->tte_id)->exists();
+
+                if (! $existsTte) {
+                    // skip jika surat TTE belum ada
+                    continue;
+                }
+
+                // ===============================
+                // CEK DATA SUDAH ADA
+                // ===============================
+                $reviewer = SuratTteReviewers::where('id', $reviewerNew->id)->first();
+
+                $payload = [
+                    'tte_id'     => $reviewerNew->tte_id,
+                    'eselon'     => $reviewerNew->eselon,
+                    'review_by'  => $reviewerNew->review_by,
+                    'created_at' => $reviewerNew->created_at,
+                    'updated_at' => $reviewerNew->updated_at,
+                    'deleted_at' => $reviewerNew->deleted_at,
+                ];
+
+                // ===============================
+                // JIKA SUDAH ADA → UPDATE
+                // ===============================
+                if ($reviewer) {
+                    $reviewer->update($payload);
+                    $count++;
+                    continue;
+                }
+
+                // ===============================
+                // JIKA BELUM ADA → CREATE
+                // ===============================
+                SuratTteReviewers::create(array_merge([
+                    'id' => $reviewerNew->id,
+                ], $payload));
+
+                $count++;
+            }
+        });
+
+        return $count;
+    }
+
+    /**
+     * Sinkronisasi seluruh data review surat TTE
+     * dari DB tte_new → DB utama
+     *
+     * @return int
+     */
+    public static function syncByAllReviews(): int
+    {
+        $count = 0;
+
+        // ===============================
+        // AMBIL SEMUA TTE ID SEKALI
+        // ===============================
+        $tteIds = SuratTte::pluck('id')->flip();
+
+        SuratTteReviewsTteNew::chunk(500, function ($reviews) use (&$count, $tteIds) {
+
+            foreach ($reviews as $reviewNew) {
+
+                // ===============================
+                // VALIDASI TTE_ID (TANPA QUERY)
+                // ===============================
+                if (! isset($tteIds[$reviewNew->tte_id])) {
+                    continue;
+                }
+
+                // ===============================
+                // CEK DATA SUDAH ADA
+                // ===============================
+                $review = SuratTteReviews::find($reviewNew->id);
+
+                $payload = [
+                    'tte_id'                 => $reviewNew->tte_id,
+                    'review_number'          => $reviewNew->review_number,
+                    'note'                   => $reviewNew->note,
+                    'stat'                   => $reviewNew->stat,
+                    'review_by'              => $reviewNew->review_by,
+                    'type'                   => $reviewNew->type,
+                    'filterable'             => $reviewNew->filterable,
+                    'is_reject_to_conceptor' => $reviewNew->is_reject_to_conceptor,
+                    'reviewed_at'            => $reviewNew->reviewed_at,
+                    'created_at'             => $reviewNew->created_at,
+                    'updated_at'             => $reviewNew->updated_at,
+                    'deleted_at'             => $reviewNew->deleted_at,
+                ];
+
+                // ===============================
+                // UPDATE / INSERT
+                // ===============================
+                if ($review) {
+                    $review->update($payload);
+                } else {
+                    SuratTteReviews::create(array_merge([
+                        'id' => $reviewNew->id,
+                    ], $payload));
+                }
 
                 $count++;
             }

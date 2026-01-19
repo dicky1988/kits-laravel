@@ -103,7 +103,21 @@
                     <tr class="text-center">
                         <th width="40"></th>
                         <th width="60" class="text-center">#</th>
-                        <th class="text-center">Nama</th>
+
+                        {{--<th class="text-center">Nama</th>--}}
+                        <th class="text-start text-center">
+                            <a href="{{ request()->fullUrlWithQuery([
+                                    'sort' => 'pegawaiName',
+                                    'direction' =>
+                                        ($sort === 'pegawaiName' && $direction === 'asc') ? 'desc' : 'asc'
+                                ]) }}" class="text-decoration-none text-dark">
+                                Nama
+                                @if($sort === 'pegawaiName')
+                                    {!! $direction === 'asc' ? '▲' : '▼' !!}
+                                @endif
+                            </a>
+                        </th>
+
                         <th style="width: 10%" class="text-center">NIK</th>
                         <th style="width: 15%" class="text-center">NIP</th>
                     </tr>

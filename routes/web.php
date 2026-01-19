@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ModulSuratController;
 use App\Http\Controllers\Ttesurat\Monitoring\MonitoringController;
 use App\Http\Controllers\Admin\PegawaiController;
+use App\Http\Controllers\Ttesurat\Arsip\ArsipController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -91,6 +92,15 @@ Route::middleware(['auth', 'active.permission:menu.ttesurat'])
     ->group(function () {
 
         Route::get('/', [MonitoringController::class, 'index'])->name('index');
+
+    });
+
+Route::middleware(['auth', 'active.permission:menu.ttesurat'])
+    ->prefix('arsip')
+    ->name('arsip.')
+    ->group(function () {
+
+        Route::get('/', [ArsipController::class, 'index'])->name('index');
 
     });
 
