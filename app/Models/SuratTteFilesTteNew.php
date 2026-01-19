@@ -9,12 +9,12 @@ class SuratTteFilesTteNew extends Model
 {
     use SoftDeletes;
 
-    protected $connection = 'tte_new';
+    protected $connection = 'tte_new_service';
 
     /**
      * Nama tabel
      */
-    protected $table = 'surat_tte_files';
+    protected $table = 'tte_files';
 
     /**
      * Primary Key

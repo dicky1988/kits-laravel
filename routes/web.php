@@ -101,6 +101,7 @@ Route::middleware(['auth', 'active.permission:menu.ttesurat'])
     ->group(function () {
 
         Route::get('/', [ArsipController::class, 'index'])->name('index');
+        Route::get('/tte/arsip/preview/{file}', [ArsipController::class, 'preview'])->name('preview');
 
     });
 

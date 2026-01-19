@@ -60,6 +60,13 @@ return [
             'report' => false,
         ],
 
+        'nextcloud' => [
+            'driver'   => 'webdav',
+            'baseUri'  => env('NEXT_CLOUD_URI'),//'http://10.10.1.18/remote.php/dav/files/dev42/',
+            'userName' => env('NEXT_CLOUD_USER'),//'dev42',
+            'password' => env('NEXT_CLOUD_PASSWORD'),//'D3v422025',
+        ],
+
     ],
 
     /*

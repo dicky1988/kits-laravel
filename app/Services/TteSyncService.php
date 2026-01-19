@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\SuratTte;
+use App\Models\SuratTteFiles;
+use App\Models\SuratTteFilesTteNew;
 use App\Models\SuratTteReviewers;
 use App\Models\SuratTteReviewersTteNew;
 use App\Models\SuratTteReviews;
@@ -186,6 +188,68 @@ class TteSyncService
                 } else {
                     SuratTteReviews::create(array_merge([
                         'id' => $reviewNew->id,
+                    ], $payload));
+                }
+
+                $count++;
+            }
+        });
+
+        return $count;
+    }
+
+    /**
+     * Sinkronisasi seluruh file surat TTE
+     * dari DB tte_new_service → DB utama
+     *
+     * @return int
+     */
+    public static function syncByAllFiles(): int
+    {
+        $count = 0;
+
+        // ===============================
+        // AMBIL SEMUA TTE ID SEKALI
+        // ===============================
+        $tteIds = SuratTte::pluck('id')->flip();
+
+        SuratTteFilesTteNew::chunk(500, function ($files) use (&$count, $tteIds) {
+
+            foreach ($files as $fileNew) {
+
+                // ===============================
+                // VALIDASI TTE_ID (TANPA QUERY)
+                // ===============================
+                if (! isset($tteIds[$fileNew->tte_id])) {
+                    continue;
+                }
+
+                // ===============================
+                // CEK DATA SUDAH ADA
+                // ===============================
+                $file = SuratTteFiles::find($fileNew->id);
+
+                $payload = [
+                    'tte_id'       => $fileNew->tte_id,
+                    'name'         => $fileNew->name,
+                    'signed_at'    => $fileNew->signed_at,
+                    'signed_link'  => $fileNew->signed_link,
+                    'signed_path'  => $fileNew->signed_path,
+                    'unique_code'  => $fileNew->unique_code,
+                    'mimetype_id'  => $fileNew->mimetype_id,
+                    'created_at'   => $fileNew->created_at,
+                    'updated_at'   => $fileNew->updated_at,
+                    'deleted_at'   => $fileNew->deleted_at,
+                ];
+
+                // ===============================
+                // UPDATE / INSERT
+                // ===============================
+                if ($file) {
+                    $file->update($payload);
+                } else {
+                    SuratTteFiles::create(array_merge([
+                        'id' => $fileNew->id,
                     ], $payload));
                 }
 

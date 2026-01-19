@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Ttesurat\Arsip;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ArsipController extends Controller
 {
@@ -61,6 +62,7 @@ class ArsipController extends Controller
                     'sort'      => $sort,
                     'direction' => $direction,
                     'year'      => $year,
+                    'mode_data' => 'arsip',
                 ]
             );
 
@@ -68,12 +70,45 @@ class ArsipController extends Controller
             return abort(500, 'API Surat TTE tidak dapat diakses');
         }
 
-        return view('tte.surat.monitoring.index', [
+        //dd($response->json('data'));
+
+        return view('tte.surat.arsip.index', [
             'ttesurat'    => $response->json('data'),
             'meta'        => $response->json('meta'),
             'sort'        => $sort,
             'direction'   => $direction,
             'breadcrumbs' => $breadcrumbs,
+        ]);
+    }
+
+    public function preview($fileId)
+    {
+        $apiToken = env('API_STATIC_TOKEN');
+
+        $apiUrl = config('api.base_url')
+            . '/api/surattte/files/' . $fileId . '/preview';
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $apiToken,
+        ])->withOptions([
+            'stream' => true,
+            'timeout' => 30,
+        ])->get($apiUrl);
+
+        if ($response->failed()) {
+            abort(404, 'File tidak ditemukan');
+        }
+
+        return new StreamedResponse(function () use ($response) {
+            $body = $response->toPsrResponse()->getBody();
+            while (! $body->eof()) {
+                echo $body->read(1024 * 8);
+            }
+        }, 200, [
+            'Content-Type'        => 'application/pdf',
+            'Content-Disposition' => 'inline',
+            'Cache-Control'       => 'no-store, no-cache, must-revalidate',
+            'Pragma'              => 'no-cache',
         ]);
     }
 }

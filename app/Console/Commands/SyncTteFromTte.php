@@ -19,5 +19,7 @@ class SyncTteFromTte extends Command
         $this->info("✔ Sinkronisasi selesai. Total data TTE Reviewers diperbarui: {$total}");
         $total = TteSyncService::syncByAllReviews();
         $this->info("✔ Sinkronisasi selesai. Total data TTE Reviews diperbarui: {$total}");
+        $total = TteSyncService::syncByAllFiles();
+        $this->info("✔ Sinkronisasi selesai. Total data TTE Files diperbarui: {$total}");
     }
 }

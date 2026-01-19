@@ -61,6 +61,7 @@ class MonitoringController extends Controller
                     'sort'      => $sort,
                     'direction' => $direction,
                     'year'      => $year,
+                    'mode_data' => 'monitoring',
                 ]
             );
 
