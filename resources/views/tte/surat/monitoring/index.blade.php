@@ -340,23 +340,25 @@
 
                                                         <hr>
 
-                                                        {{-- TIMELINE HEADER --}}
+                                                        <x-riwayat-review :ttesurat="$ttesurat" />
+
+                                                        {{-- TIMELINE HEADER --}}{{--
                                                         <div class="fw-semibold mb-3 text-dark">
                                                             <i class="fa fa-history me-1"></i>
                                                             Riwayat Reviu & Persetujuan
                                                         </div>
 
-                                                        {{-- TIMELINE --}}
+                                                        --}}{{-- TIMELINE --}}{{--
                                                         <div class="timeline">
 
-                                                            {{-- DOT --}}
+                                                            --}}{{-- DOT --}}{{--
                                                             <div class="timeline-dot bg-success"></div>
 
-                                                            {{-- CONTENT --}}
+                                                            --}}{{-- CONTENT --}}{{--
                                                             <div class="timeline-content mb-2">
                                                                 <div class="d-flex align-items-start">
 
-                                                                    {{-- FOTO PEMBUAT --}}
+                                                                    --}}{{-- FOTO PEMBUAT --}}{{--
                                                                     @php
                                                                         $fotoUrlInput = 'https://map.bpkp.go.id/api/v1/dms/foto?niplama='
                                                                             . ($ttesurat['created_by']['pegawaiID'] ?? '');
@@ -370,21 +372,21 @@
                                                                         onerror="this.onerror=null;this.src='{{ asset('images/avatar-default.png') }}';"
                                                                     >
 
-                                                                    {{-- INFO --}}
+                                                                    --}}{{-- INFO --}}{{--
                                                                     <div class="flex-grow-1">
 
-                                                                        {{-- AKSI --}}
+                                                                        --}}{{-- AKSI --}}{{--
                                                                         <div class="fw-semibold text-dark mb-1">
                                                                             <i class="fa fa-plus-circle text-success me-1"></i>
                                                                             Dokumen Diinput
                                                                         </div>
 
-                                                                        {{-- DETAIL --}}
+                                                                        --}}{{-- DETAIL --}}{{--
                                                                         <div class="small text-muted mb-1">
                                                                             Oleh <strong>{{ $ttesurat['created_by']['pegawaiName'] ?? '-' }}</strong>
                                                                         </div>
 
-                                                                        {{-- NOMOR SURAT --}}
+                                                                        --}}{{-- NOMOR SURAT --}}{{--
                                                                         <div class="mb-1">
                                                                             <span class="badge bg-light text-dark border">
                                                                                 <i class="fa fa-hashtag me-1"></i>
@@ -392,7 +394,7 @@
                                                                             </span>
                                                                         </div>
 
-                                                                        {{-- WAKTU --}}
+                                                                        --}}{{-- WAKTU --}}{{--
                                                                         @php
                                                                             $inputAt = !empty($ttesurat['created_at'])
                                                                                 ? \Carbon\Carbon::parse($ttesurat['created_at'])->translatedFormat('d F Y H:i')
@@ -429,12 +431,12 @@
                                                                     @endphp
                                                                     <div class="timeline-dot" style="background-color: {{ $dotColor }}"></div>
 
-                                                                    {{-- CONTENT --}}
+                                                                    --}}{{-- CONTENT --}}{{--
                                                                     <div class="timeline-content">
 
                                                                         <div class="d-flex align-items-start">
 
-                                                                            {{-- FOTO --}}
+                                                                            --}}{{-- FOTO --}}{{--
                                                                             <img
                                                                                 src="{{ $fotoUrl }}"
                                                                                 width="36"
@@ -445,7 +447,7 @@
 
                                                                             <div class="flex-grow-1">
 
-                                                                                {{-- STATUS --}}
+                                                                                --}}{{-- STATUS --}}{{--
                                                                                 <div class="mb-1">
                                                                                     {!! stateReviu(
                                                                                         $reviews['stat'],
@@ -456,7 +458,7 @@
                                                                                     ) !!}
                                                                                 </div>
 
-                                                                                {{-- WAKTU --}}
+                                                                                --}}{{-- WAKTU --}}{{--
                                                                                 @if($reviewedAt)
                                                                                     <div class="small text-muted">
                                                                                         <i class="fa fa-clock me-1"></i>
@@ -469,11 +471,11 @@
 
                                                                     </div>
                                                                 </div>
-                                                                {{--{{ $reviews['is_reject_to_conceptor'].'-'.$reviews['id'] }}
-                                                                {{ $reviews['stat'].'-'.$reviews['type'].'-'.$ttesurat['stat'].'-'.$reviews['reviews']['pegawaiName'] ?? ''.'-'.$reviews['review_number'] ?? null.'-' }}--}}
+                                                                --}}{{--{{ $reviews['is_reject_to_conceptor'].'-'.$reviews['id'] }}
+                                                                {{ $reviews['stat'].'-'.$reviews['type'].'-'.$ttesurat['stat'].'-'.$reviews['reviews']['pegawaiName'] ?? ''.'-'.$reviews['review_number'] ?? null.'-' }}--}}{{--
                                                             @endforeach
 
-                                                        </div>
+                                                        </div>--}}
 
                                                     </div>
                                                 </div>

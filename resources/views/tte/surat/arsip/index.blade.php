@@ -340,13 +340,15 @@
 
                                                         <hr>
 
-                                                        {{-- TIMELINE HEADER --}}
+                                                        <x-riwayat-review :ttesurat="$ttesurat" />
+
+                                                        {{-- TIMELINE HEADER --}}{{--
                                                         <div class="fw-semibold mb-3 text-dark">
                                                             <i class="fa fa-history me-1"></i>
                                                             Riwayat Reviu & Persetujuan
                                                         </div>
 
-                                                        {{-- TIMELINE --}}
+                                                        --}}{{-- TIMELINE --}}{{--
                                                         <div class="timeline">
 
                                                             @foreach($ttesurat['reviews'] as $reviews)
@@ -368,12 +370,12 @@
                                                                     @endphp
                                                                     <div class="timeline-dot" style="background-color: {{ $dotColor }}"></div>
 
-                                                                    {{-- CONTENT --}}
+                                                                    --}}{{-- CONTENT --}}{{--
                                                                     <div class="timeline-content">
 
                                                                         <div class="d-flex align-items-start">
 
-                                                                            {{-- FOTO --}}
+                                                                            --}}{{-- FOTO --}}{{--
                                                                             <img
                                                                                 src="{{ $fotoUrl }}"
                                                                                 width="36"
@@ -384,7 +386,7 @@
 
                                                                             <div class="flex-grow-1">
 
-                                                                                {{-- STATUS --}}
+                                                                                --}}{{-- STATUS --}}{{--
                                                                                 <div class="mb-1">
                                                                                     {!! stateReviu(
                                                                                         $reviews['stat'],
@@ -395,7 +397,7 @@
                                                                                     ) !!}
                                                                                 </div>
 
-                                                                                {{-- WAKTU --}}
+                                                                                --}}{{-- WAKTU --}}{{--
                                                                                 @if($reviewedAt)
                                                                                     <div class="small text-muted">
                                                                                         <i class="fa fa-clock me-1"></i>
@@ -410,7 +412,7 @@
                                                                 </div>
                                                             @endforeach
 
-                                                        </div>
+                                                        </div>--}}
 
                                                     </div>
                                                 </div>
