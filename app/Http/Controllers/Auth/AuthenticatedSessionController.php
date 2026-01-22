@@ -42,6 +42,11 @@ class AuthenticatedSessionController extends Controller
             'password' => 'required|string',
         ]);
 
+        /**
+         * =====================================================
+         * 1️⃣ COBA LOGIN KE API STARA
+         * =====================================================
+         */
         try {
             $response = Http::timeout(10)->post(
                 config('services.stara.login'),
@@ -60,24 +65,25 @@ class AuthenticatedSessionController extends Controller
                     $userInfo = $data['user_info'];
 
                     $user = User::updateOrCreate(
-                    // 🔥 IDENTITAS LOGIN HARUS USERNAME
+                    // IDENTITAS LOGIN = USERNAME
                         ['username' => $userInfo['username']],
                         [
                             'name'              => $userInfo['name'],
                             'nip'               => preg_replace('/\s+/', '', $userInfo['nipbaru']),
                             'nip_lama'          => $userInfo['user_nip'],
-                            'email'             => isset($userInfo['email']) ? Str::lower($userInfo['email']): null,
+                            'email'             => isset($userInfo['email'])
+                                ? Str::lower($userInfo['email'])
+                                : null,
                             'password'          => bcrypt($request->password),
                             'email_verified_at' => now(),
 
-                            'api_token'         => blank($data['api_token'] ?? null) ? null : $data['api_token'],
-                            'api_token_web'     => blank($data['api_token_web'] ?? null) ? null : $data['api_token_web'],
-                            'api_token_smile'   => blank($data['api_token_smile'] ?? null) ? null : $data['api_token_smile'],
-                            'jwt_token'         => blank($data['token'] ?? null) ? null : $data['token'],
+                            'api_token'       => blank($data['api_token'] ?? null) ? null : $data['api_token'],
+                            'api_token_web'   => blank($data['api_token_web'] ?? null) ? null : $data['api_token_web'],
+                            'api_token_smile' => blank($data['api_token_smile'] ?? null) ? null : $data['api_token_smile'],
+                            'jwt_token'       => blank($data['token'] ?? null) ? null : $data['token'],
                         ]
                     );
 
-                    // 🔐 SESSION BENAR
                     Auth::login($user);
                     $request->session()->regenerate();
 
@@ -85,25 +91,34 @@ class AuthenticatedSessionController extends Controller
                 }
             }
         } catch (\Throwable $e) {
-            logger()->warning('STARA API login failed', [
+            logger()->warning('STARA API login failed, fallback to local auth', [
                 'username' => $request->username,
                 'error'    => $e->getMessage(),
             ]);
         }
 
-        // 🔁 FALLBACK BREEZE
-        if (!Auth::attempt([
+        /**
+         * =====================================================
+         * 2️⃣ FALLBACK: LOGIN USER LOKAL (DB)
+         * =====================================================
+         */
+        if (Auth::attempt([
             'username' => $request->username,
             'password' => $request->password,
         ])) {
-            throw ValidationException::withMessages([
-                'username' => 'Login gagal. Periksa username atau password.',
-            ]);
+            $request->session()->regenerate();
+
+            return redirect()->intended(route('dashboard'));
         }
 
-        $request->session()->regenerate();
-
-        return redirect()->intended(route('dashboard'));
+        /**
+         * =====================================================
+         * 3️⃣ GAGAL TOTAL
+         * =====================================================
+         */
+        throw ValidationException::withMessages([
+            'username' => 'Login gagal. Sistem autentikasi sedang bermasalah atau kredensial tidak valid.',
+        ]);
     }
 
     /**

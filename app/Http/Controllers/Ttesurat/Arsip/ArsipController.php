@@ -31,8 +31,8 @@ class ArsipController extends Controller
                 'url'   => null, // halaman aktif
             ],
             [
-                'title' => 'Monitoring',
-                'url'   => route('monitoring.index'),
+                'title' => 'Arsip',
+                'url'   => route('arsip.index'),
             ],
             [
                 'title' => 'List Data Surat TTE',

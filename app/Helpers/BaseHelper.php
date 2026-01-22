@@ -1,7 +1,7 @@
 <?php
-if (! function_exists('stateReviu')) {
+if (! function_exists('stateReviu1')) {
 
-    function stateReviu($state, $type, $stat_surat, $name = '')
+    function stateReviu1($state, $type, $stat_surat, $name = '')
     {
         $nameText = $name ? ' - ' . e($name) : '';
 
@@ -33,6 +33,10 @@ if (! function_exists('stateReviu')) {
             if ($state === 0 && $stat_surat == 3) {
                 return badge('info', 'Menunggu Penomoran dan Lanjut di Reviu Eselon I / Kepala');
             }
+
+            if ($state === 1 && $stat_surat == 5) {
+                return badge('success', 'Selesai' . $nameText);
+            }
         }
 
         // ===============================
@@ -45,6 +49,10 @@ if (! function_exists('stateReviu')) {
             }
 
             if ($state === 1 && $stat_surat == 0) {
+                return badge('success', 'Penomoran Selesai' . $nameText);
+            }
+
+            if ($state === 1 && $stat_surat == 5) {
                 return badge('success', 'Penomoran Selesai' . $nameText);
             }
         }
@@ -70,6 +78,140 @@ if (! function_exists('stateReviu')) {
                 return badge('success', 'Selesai' . $nameText);
             }
         }
+
+        // ===============================
+        // DEFAULT
+        // ===============================
+        return badge('secondary', 'Status Tidak Diketahui');
+    }
+}
+
+if (! function_exists('stateReviu')) {
+
+    function stateReviu($state, $type, $stat_surat, $name = '',$tokonseptor = 0)
+    {
+        $nameText = $name ? ' - ' . e($name) : '';
+
+        if($stat_surat == 0) {
+            if($type == 1) {
+                if($state == 1) {
+                    return badge('success', 'Selesai Review' . $nameText);
+                } elseif($state == 0) {
+                    return badge('warning', 'Menunggu Review' . $nameText);
+                } else {
+                    return badge('secondary', 'Status Tidak Diketahui');
+                }
+            } elseif ($type == 2) {
+
+            } elseif ($type == 3) {
+
+            } else {
+                return badge('secondary', 'Status Tidak Diketahui');
+            }
+        } elseif ($stat_surat == 1) {
+            if($type == 1) {
+                if($state == 1) {
+                    return badge('success', 'Selesai Review' . $nameText);
+                } elseif($state == 0) {
+                    return badge('warning', 'Menunggu Review' . $nameText);
+                } else {
+                    return badge('secondary', 'Status Tidak Diketahui');
+                }
+            } elseif ($type == 2) {
+
+            } elseif ($type == 3) {
+
+            } else {
+                return badge('secondary', 'Status Tidak Diketahui');
+            }
+        } elseif ($stat_surat == 2) {
+            if($type == 1) {
+                if($state == 1) {
+                    return badge('success', 'Selesai Review' . $nameText);
+                } elseif($state == 0) {
+                    return badge('warning', 'Menunggu Perbaikan' . $nameText);
+                } elseif($state == 2) {
+                    return badge('danger', 'Dikembalikan' . $nameText);
+                } else {
+                    return badge('secondary', 'Status Tidak Diketahui');
+                }
+            } elseif ($type == 2) {
+
+            } elseif ($type == 3) {
+
+            } else {
+                return badge('secondary', 'Status Tidak Diketahui');
+            }
+        } elseif ($stat_surat == 3) {
+            if($type == 1) {
+
+            } elseif ($type == 2) {
+
+            } elseif ($type == 3) {
+
+            } else {
+                return badge('secondary', 'Status Tidak Diketahui');
+            }
+        } elseif ($stat_surat == 4) {
+            if($type == 1) {
+                if($state == 1) {
+                    return badge('success', 'Selesai Review' . $nameText);
+                } elseif($state == 0) {
+                    return badge('warning', 'Menunggu Review' . $nameText);
+                } else {
+                    return badge('secondary', 'Status Tidak Diketahui');
+                }
+            } elseif ($type == 2) {
+                if($state == 1) {
+                    return badge('info', 'Selesai Penomoran' . $nameText);
+                } elseif($state == 0) {
+                    return badge('warning', 'Menunggu Penomoran' . $nameText);
+                } else {
+                    return badge('secondary', 'Status Tidak Diketahui');
+                }
+            } elseif ($type == 3) {
+                if($state == 1) {
+                    return badge('primary', 'Selesai di TTE' . $nameText);
+                } elseif($state == 0) {
+                    return badge('warning', 'Menunggu di TTE' . $nameText);
+                } else {
+                    return badge('secondary', 'Status Tidak Diketahui');
+                }
+            } else {
+                return badge('secondary', 'Status Tidak Diketahui');
+            }
+        } elseif ($stat_surat == 5) {
+            if($type == 1) {
+                if($state == 1) {
+                    return badge('success', 'Selesai Review' . $nameText);
+                } elseif($state == 0) {
+
+                } else {
+                    return badge('secondary', 'Status Tidak Diketahui');
+                }
+            } elseif ($type == 2) {
+                if($state == 1) {
+                    return badge('warning', 'Selesai Penomoran' . $nameText);
+                } elseif ($state == 0) {
+                    return badge('info', 'Menununggu Penomoran' . $nameText);
+                } else {
+
+                }
+            } elseif ($type == 3) {
+                if($state == 1) {
+                    return badge('primary', 'Selesai Ditandatangani' . $nameText);
+                } elseif ($state == 0) {
+                    return badge('info', 'Menununggu Ditandatangani' . $nameText);
+                } else {
+
+                }
+            } else {
+                return badge('secondary', 'Status Tidak Diketahui');
+            }
+        } else {
+            return badge('secondary', 'Status Tidak Diketahui');
+        }
+
 
         // ===============================
         // DEFAULT

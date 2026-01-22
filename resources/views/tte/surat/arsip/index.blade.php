@@ -8,6 +8,41 @@
         cursor: pointer;
     }
 </style>
+<style>
+    .timeline {
+        position: relative;
+        margin-left: 18px;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 8px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #dee2e6;
+    }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 16px;
+    }
+
+    .timeline-dot {
+        position: absolute;
+        left: -2px;
+        top: 6px;
+        width: 10px;
+        height: 10px;
+        background: #0d6efd;
+        border-radius: 50%;
+    }
+
+    .timeline-content {
+        margin-left: 20px;
+    }
+</style>
 
 @section('content')
     <div class="container-fluid px-3">
@@ -22,7 +57,7 @@
                     <div>
                         <h5 class="mb-0 fw-semibold">
                             <i class="fa fa-envelope-open-text me-2 text-primary"></i>
-                            List Monitoring Surat TTE
+                            List Arsip Surat TTE
                         </h5>
                         {{--<small class="text-muted">
                             Data pengguna diambil dari API User
@@ -245,22 +280,152 @@
 
                                 @if($file)
                                     <div class="p-3">
-                                        <div class="mb-2 fw-semibold">
-                                            Preview Dokumen:
-                                            <span class="text-muted">{{ $file['name'] }}</span>
-                                        </div>
+                                        <div class="row g-3">
 
-                                        <iframe
-                                            src="{{ route('arsip.preview', $file['id']) }}"
-                                            width="100%"
-                                            height="600"
-                                            class="border rounded">
-                                        </iframe>
+                                            {{-- PDF PREVIEW (8) --}}
+                                            <div class="col-md-8">
+                                                <div class="border rounded bg-white h-100">
+                                                    <iframe
+                                                        data-src="{{ route('arsip.preview', $file['id']) }}"
+                                                        width="100%"
+                                                        height="650"
+                                                        style="border: none;"
+                                                        loading="lazy">
+                                                    </iframe>
+                                                </div>
+
+                                                <div class="text-muted small mt-2">
+                                                    <i class="fa fa-info-circle me-1"></i>
+                                                    Dokumen ditampilkan langsung dari arsip TTE (PDF Viewer)
+                                                </div>
+                                            </div>
+
+                                            {{-- INFO CARD (4) --}}
+                                            <div class="col-md-4">
+                                                <div class="card shadow-sm h-100">
+                                                    <div class="card-body">
+
+                                                        {{-- HEADER --}}
+                                                        <div class="fw-semibold mb-3 text-dark">
+                                                            <i class="fa fa-file-pdf text-danger me-1"></i>
+                                                            Informasi Dokumen
+                                                        </div>
+
+                                                        {{-- META DOKUMEN --}}
+                                                        <div class="mb-2">
+                                                            <div class="text-muted small">Nomor Surat</div>
+                                                            <div class="fw-semibold">{{ $ttesurat['number'] ?? '-' }}</div>
+                                                        </div>
+
+                                                        <div class="mb-2">
+                                                            <div class="text-muted small">Nama Dokumen</div>
+                                                            <div class="fw-semibold">{{ $ttesurat['name'] ?? '-' }}</div>
+                                                        </div>
+
+                                                        <hr>
+
+                                                        <div class="mb-2">
+                                                            <div class="text-muted small">Nama File</div>
+                                                            <div class="fw-semibold text-break">{{ $file['name'] }}</div>
+                                                        </div>
+
+                                                        @if(!empty($file['signed_at']))
+                                                            <div class="mb-2">
+                                                                <div class="text-muted small">Ditandatangani</div>
+                                                                <div class="fw-semibold">
+                                                                    {{ \Carbon\Carbon::parse($file['signed_at'])->translatedFormat('d F Y H:i') }}
+                                                                </div>
+                                                            </div>
+                                                        @endif
+
+                                                        <hr>
+
+                                                        {{-- TIMELINE HEADER --}}
+                                                        <div class="fw-semibold mb-3 text-dark">
+                                                            <i class="fa fa-history me-1"></i>
+                                                            Riwayat Reviu & Persetujuan
+                                                        </div>
+
+                                                        {{-- TIMELINE --}}
+                                                        <div class="timeline">
+
+                                                            @foreach($ttesurat['reviews'] as $reviews)
+                                                                @php
+                                                                    $fotoUrl = 'https://map.bpkp.go.id/api/v1/dms/foto?niplama=' . ($reviews['review_by'] ?? '');
+                                                                    $reviewedAt = $reviews['reviewed_at']
+                                                                        ? \Carbon\Carbon::parse($reviews['reviewed_at'])->translatedFormat('d F Y H:i')
+                                                                        : null;
+                                                                @endphp
+
+                                                                <div class="timeline-item">
+
+                                                                    @php
+                                                                        $dotColor = match ($reviews['stat']) {
+                                                                            1 => '#198754', // disetujui
+                                                                            2 => '#dc3545', // ditolak
+                                                                            default => '#ffc107', // menunggu
+                                                                        };
+                                                                    @endphp
+                                                                    <div class="timeline-dot" style="background-color: {{ $dotColor }}"></div>
+
+                                                                    {{-- CONTENT --}}
+                                                                    <div class="timeline-content">
+
+                                                                        <div class="d-flex align-items-start">
+
+                                                                            {{-- FOTO --}}
+                                                                            <img
+                                                                                src="{{ $fotoUrl }}"
+                                                                                width="36"
+                                                                                height="36"
+                                                                                class="rounded-circle border me-2"
+                                                                                onerror="this.onerror=null;this.src='{{ asset('images/avatar-default.png') }}';"
+                                                                            >
+
+                                                                            <div class="flex-grow-1">
+
+                                                                                {{-- STATUS --}}
+                                                                                <div class="mb-1">
+                                                                                    {!! stateReviu(
+                                                                                        $reviews['stat'],
+                                                                                        $reviews['type'],
+                                                                                        $ttesurat['stat'],
+                                                                                        $reviews['reviews']['pegawaiName'] ?? '',
+                                                                                        $reviews['review_number'] ?? null
+                                                                                    ) !!}
+                                                                                </div>
+
+                                                                                {{-- WAKTU --}}
+                                                                                @if($reviewedAt)
+                                                                                    <div class="small text-muted">
+                                                                                        <i class="fa fa-clock me-1"></i>
+                                                                                        {{ $reviewedAt }}
+                                                                                    </div>
+                                                                                @endif
+
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
                                     </div>
                                 @else
-                                    <div class="p-3 text-center text-muted">
-                                        <i class="fa fa-file-pdf fa-2x mb-2"></i><br>
-                                        File PDF belum tersedia  {{ $file }}
+                                    {{-- EMPTY STATE --}}
+                                    <div class="p-4 text-center text-muted">
+                                        <i class="fa fa-file-pdf fa-3x mb-2 text-secondary"></i>
+                                        <div class="fw-semibold">File PDF Belum Tersedia</div>
+                                        <div class="small mt-1">
+                                            Dokumen ini belum memiliki file hasil tanda tangan elektronik.
+                                        </div>
                                     </div>
                                 @endif
                             </td>
@@ -298,22 +463,34 @@
             document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(button => {
                 const targetSelector = button.getAttribute('data-bs-target')
                 const target = document.querySelector(targetSelector)
-
                 if (!target) return
 
                 const icon = button.querySelector('i')
+                const iframe = target.querySelector('iframe[data-src]')
 
+                // Saat dibuka
                 target.addEventListener('show.bs.collapse', function () {
                     if (icon) {
                         icon.classList.remove('fa-plus')
                         icon.classList.add('fa-minus')
                     }
+
+                    // Lazy load PDF
+                    if (iframe && !iframe.getAttribute('src')) {
+                        iframe.setAttribute('src', iframe.dataset.src)
+                    }
                 })
 
+                // Saat ditutup (opsional: unload PDF)
                 target.addEventListener('hide.bs.collapse', function () {
                     if (icon) {
                         icon.classList.remove('fa-minus')
                         icon.classList.add('fa-plus')
+                    }
+
+                    // Kosongkan src agar ringan (optional)
+                    if (iframe) {
+                        iframe.removeAttribute('src')
                     }
                 })
             })
