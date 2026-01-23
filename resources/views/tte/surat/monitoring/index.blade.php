@@ -178,6 +178,7 @@
                                         type="button"
                                         data-bs-toggle="collapse"
                                         data-bs-target="#detail-{{ $ttesurat['id'] }}"
+                                        data-collapse-type="detail"
                                         aria-expanded="false">
                                     <i id="icon-{{ $ttesurat['id'] }}" class="fa fa-plus"></i>
                                 </button>
@@ -342,141 +343,6 @@
 
                                                         <x-riwayat-review :ttesurat="$ttesurat" />
 
-                                                        {{-- TIMELINE HEADER --}}{{--
-                                                        <div class="fw-semibold mb-3 text-dark">
-                                                            <i class="fa fa-history me-1"></i>
-                                                            Riwayat Reviu & Persetujuan
-                                                        </div>
-
-                                                        --}}{{-- TIMELINE --}}{{--
-                                                        <div class="timeline">
-
-                                                            --}}{{-- DOT --}}{{--
-                                                            <div class="timeline-dot bg-success"></div>
-
-                                                            --}}{{-- CONTENT --}}{{--
-                                                            <div class="timeline-content mb-2">
-                                                                <div class="d-flex align-items-start">
-
-                                                                    --}}{{-- FOTO PEMBUAT --}}{{--
-                                                                    @php
-                                                                        $fotoUrlInput = 'https://map.bpkp.go.id/api/v1/dms/foto?niplama='
-                                                                            . ($ttesurat['created_by']['pegawaiID'] ?? '');
-                                                                    @endphp
-
-                                                                    <img
-                                                                        src="{{ $fotoUrlInput }}"
-                                                                        width="36"
-                                                                        height="36"
-                                                                        class="rounded-circle border me-2"
-                                                                        onerror="this.onerror=null;this.src='{{ asset('images/avatar-default.png') }}';"
-                                                                    >
-
-                                                                    --}}{{-- INFO --}}{{--
-                                                                    <div class="flex-grow-1">
-
-                                                                        --}}{{-- AKSI --}}{{--
-                                                                        <div class="fw-semibold text-dark mb-1">
-                                                                            <i class="fa fa-plus-circle text-success me-1"></i>
-                                                                            Dokumen Diinput
-                                                                        </div>
-
-                                                                        --}}{{-- DETAIL --}}{{--
-                                                                        <div class="small text-muted mb-1">
-                                                                            Oleh <strong>{{ $ttesurat['created_by']['pegawaiName'] ?? '-' }}</strong>
-                                                                        </div>
-
-                                                                        --}}{{-- NOMOR SURAT --}}{{--
-                                                                        <div class="mb-1">
-                                                                            <span class="badge bg-light text-dark border">
-                                                                                <i class="fa fa-hashtag me-1"></i>
-                                                                                {{ $ttesurat['number'] ?? 'Nomor belum tersedia' }}
-                                                                            </span>
-                                                                        </div>
-
-                                                                        --}}{{-- WAKTU --}}{{--
-                                                                        @php
-                                                                            $inputAt = !empty($ttesurat['created_at'])
-                                                                                ? \Carbon\Carbon::parse($ttesurat['created_at'])->translatedFormat('d F Y H:i')
-                                                                                : null;
-                                                                        @endphp
-
-                                                                        @if($inputAt)
-                                                                            <div class="small text-muted">
-                                                                                <i class="fa fa-clock me-1"></i>
-                                                                                {{ $inputAt }}
-                                                                            </div>
-                                                                        @endif
-
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            @foreach($ttesurat['reviews'] as $reviews)
-                                                                @php
-                                                                    $fotoUrl = 'https://map.bpkp.go.id/api/v1/dms/foto?niplama=' . ($reviews['review_by'] ?? '');
-                                                                    $reviewedAt = $reviews['reviewed_at']
-                                                                        ? \Carbon\Carbon::parse($reviews['reviewed_at'])->translatedFormat('d F Y H:i')
-                                                                        : null;
-                                                                @endphp
-
-                                                                <div class="timeline-item">
-
-                                                                    @php
-                                                                        $dotColor = match ($reviews['stat']) {
-                                                                            1 => '#198754', // disetujui
-                                                                            2 => '#dc3545', // ditolak
-                                                                            default => '#ffc107', // menunggu
-                                                                        };
-                                                                    @endphp
-                                                                    <div class="timeline-dot" style="background-color: {{ $dotColor }}"></div>
-
-                                                                    --}}{{-- CONTENT --}}{{--
-                                                                    <div class="timeline-content">
-
-                                                                        <div class="d-flex align-items-start">
-
-                                                                            --}}{{-- FOTO --}}{{--
-                                                                            <img
-                                                                                src="{{ $fotoUrl }}"
-                                                                                width="36"
-                                                                                height="36"
-                                                                                class="rounded-circle border me-2"
-                                                                                onerror="this.onerror=null;this.src='{{ asset('images/avatar-default.png') }}';"
-                                                                            >
-
-                                                                            <div class="flex-grow-1">
-
-                                                                                --}}{{-- STATUS --}}{{--
-                                                                                <div class="mb-1">
-                                                                                    {!! stateReviu(
-                                                                                        $reviews['stat'],
-                                                                                        $reviews['type'],
-                                                                                        $ttesurat['stat'],
-                                                                                        $reviews['reviews']['pegawaiName'] ?? '',
-                                                                                        $reviews['is_reject_to_conceptor'] ?? 0
-                                                                                    ) !!}
-                                                                                </div>
-
-                                                                                --}}{{-- WAKTU --}}{{--
-                                                                                @if($reviewedAt)
-                                                                                    <div class="small text-muted">
-                                                                                        <i class="fa fa-clock me-1"></i>
-                                                                                        {{ $reviewedAt }}
-                                                                                    </div>
-                                                                                @endif
-
-                                                                            </div>
-                                                                        </div>
-
-                                                                    </div>
-                                                                </div>
-                                                                --}}{{--{{ $reviews['is_reject_to_conceptor'].'-'.$reviews['id'] }}
-                                                                {{ $reviews['stat'].'-'.$reviews['type'].'-'.$ttesurat['stat'].'-'.$reviews['reviews']['pegawaiName'] ?? ''.'-'.$reviews['review_number'] ?? null.'-' }}--}}{{--
-                                                            @endforeach
-
-                                                        </div>--}}
-
                                                     </div>
                                                 </div>
                                             </div>
@@ -525,40 +391,39 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
-            document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(button => {
-                const targetSelector = button.getAttribute('data-bs-target')
-                const target = document.querySelector(targetSelector)
-                if (!target) return
+            document
+                .querySelectorAll('[data-bs-toggle="collapse"][data-collapse-type="detail"]')
+                .forEach(button => {
 
-                const icon = button.querySelector('i')
-                const iframe = target.querySelector('iframe[data-src]')
+                    const targetSelector = button.getAttribute('data-bs-target')
+                    const target = document.querySelector(targetSelector)
+                    if (!target) return
 
-                // Saat dibuka
-                target.addEventListener('show.bs.collapse', function () {
-                    if (icon) {
-                        icon.classList.remove('fa-plus')
-                        icon.classList.add('fa-minus')
-                    }
+                    const icon = button.querySelector('i')
+                    const iframe = target.querySelector('iframe[data-src]')
 
-                    // Lazy load PDF
-                    if (iframe && !iframe.getAttribute('src')) {
-                        iframe.setAttribute('src', iframe.dataset.src)
-                    }
+                    target.addEventListener('show.bs.collapse', function () {
+                        if (icon) {
+                            icon.classList.remove('fa-plus')
+                            icon.classList.add('fa-minus')
+                        }
+
+                        if (iframe && !iframe.getAttribute('src')) {
+                            iframe.setAttribute('src', iframe.dataset.src)
+                        }
+                    })
+
+                    target.addEventListener('hide.bs.collapse', function () {
+                        if (icon) {
+                            icon.classList.remove('fa-minus')
+                            icon.classList.add('fa-plus')
+                        }
+
+                        if (iframe) {
+                            iframe.removeAttribute('src')
+                        }
+                    })
                 })
-
-                // Saat ditutup (opsional: unload PDF)
-                target.addEventListener('hide.bs.collapse', function () {
-                    if (icon) {
-                        icon.classList.remove('fa-minus')
-                        icon.classList.add('fa-plus')
-                    }
-
-                    // Kosongkan src agar ringan (optional)
-                    if (iframe) {
-                        iframe.removeAttribute('src')
-                    }
-                })
-            })
 
         })
     </script>

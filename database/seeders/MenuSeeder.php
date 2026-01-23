@@ -82,5 +82,13 @@ class MenuSeeder extends Seeder
             'permission' => 'menu.ttesurat.arsip',
         ]);
 
+        Menu::create([
+            'title' => 'Input Surat',
+            'icon' => 'fas fa-file-signature',
+            'route' => 'input.index',
+            'parent_id' => $ttesurat->id,
+            'permission' => 'menu.ttesurat.input.surat',
+        ]);
+
     }
 }

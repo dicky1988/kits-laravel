@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\ModulSuratController;
 use App\Http\Controllers\Ttesurat\Monitoring\MonitoringController;
 use App\Http\Controllers\Admin\PegawaiController;
 use App\Http\Controllers\Ttesurat\Arsip\ArsipController;
+use App\Http\Controllers\Ttesurat\Input\InputSuratController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -103,6 +104,20 @@ Route::middleware(['auth', 'active.permission:menu.ttesurat'])
 
         Route::get('/', [ArsipController::class, 'index'])->name('index');
         Route::get('/tte/arsip/preview/{id}', [ArsipController::class, 'preview'])->name('preview');
+
+    });
+
+Route::middleware(['auth', 'active.permission:menu.ttesurat'])
+    ->prefix('input')
+    ->name('input.')
+    ->group(function () {
+
+        Route::get('/', [InputSuratController::class, 'index'])->name('index');
+        Route::get('/create', [InputSuratController::class, 'create'])->name('create');
+        Route::post('/store', [InputSuratController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [InputSuratController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [InputSuratController::class, 'update'])->name('update');
+        Route::delete('/{id}', [InputSuratController::class, 'destroy'])->name('destroy');
 
     });
 
