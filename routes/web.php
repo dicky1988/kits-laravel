@@ -92,6 +92,7 @@ Route::middleware(['auth', 'active.permission:menu.ttesurat'])
     ->group(function () {
 
         Route::get('/', [MonitoringController::class, 'index'])->name('index');
+        Route::get('/surat/files/{tte_id}/preview/{id}/pdf', [MonitoringController::class, 'previewPdf'])->name('surat.preview.pdf');
 
     });
 
@@ -101,7 +102,7 @@ Route::middleware(['auth', 'active.permission:menu.ttesurat'])
     ->group(function () {
 
         Route::get('/', [ArsipController::class, 'index'])->name('index');
-        Route::get('/tte/arsip/preview/{file}', [ArsipController::class, 'preview'])->name('preview');
+        Route::get('/tte/arsip/preview/{id}', [ArsipController::class, 'preview'])->name('preview');
 
     });
 

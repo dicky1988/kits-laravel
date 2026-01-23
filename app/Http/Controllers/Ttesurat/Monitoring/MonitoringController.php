@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Ttesurat\Monitoring;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class MonitoringController extends Controller
 {
@@ -75,6 +76,39 @@ class MonitoringController extends Controller
             'sort'        => $sort,
             'direction'   => $direction,
             'breadcrumbs' => $breadcrumbs,
+        ]);
+    }
+
+    public function previewPdf($tte_id, $id)
+    {
+        //dd($tte_id,$id);
+        if (!auth()->check()) {
+            abort(401);
+        }
+
+        // Ambil token dari .env (pastikan sama dengan token statik di API)
+        $apiToken = env('API_STATIC_TOKEN');
+
+        try {
+            $response = Http::timeout(180)
+                ->withToken($apiToken)
+                ->get(config('api.base_url') . "/api/surattte/files/{$tte_id}/preview/{$id}/pdf");
+
+            if (! $response->successful()) {
+                abort($response->status(), 'File tidak ditemukan');
+            }
+
+        } catch (\Throwable $e) {
+            logger()->error('API PDF ERROR', [
+                'message' => $e->getMessage(),
+            ]);
+            abort(503, 'Gagal terhubung ke server dokumen');
+        }
+
+        return response($response->body(), 200, [
+            'Content-Type'        => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="preview.pdf"',
+            'Cache-Control'       => 'no-store, no-cache',
         ]);
     }
 }

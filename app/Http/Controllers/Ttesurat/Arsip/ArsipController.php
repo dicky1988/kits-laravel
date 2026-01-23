@@ -86,7 +86,7 @@ class ArsipController extends Controller
         $apiToken = env('API_STATIC_TOKEN');
 
         $apiUrl = config('api.base_url')
-            . '/api/surattte/files/' . $fileId . '/preview';
+            . '/api/surattte/files/' . $fileId . '/preview/tte';
 
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $apiToken,

@@ -286,7 +286,7 @@
                                             <div class="col-md-8">
                                                 <div class="border rounded bg-white h-100">
                                                     <iframe
-                                                        data-src="{{ route('arsip.preview', $file['id']) }}"
+                                                        data-src="{{ route('monitoring.surat.preview.pdf', [$file['tte_id'],$file['id']]) }}"
                                                         width="100%"
                                                         height="650"
                                                         style="border: none;"
@@ -528,22 +528,34 @@
             document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(button => {
                 const targetSelector = button.getAttribute('data-bs-target')
                 const target = document.querySelector(targetSelector)
-
                 if (!target) return
 
                 const icon = button.querySelector('i')
+                const iframe = target.querySelector('iframe[data-src]')
 
+                // Saat dibuka
                 target.addEventListener('show.bs.collapse', function () {
                     if (icon) {
                         icon.classList.remove('fa-plus')
                         icon.classList.add('fa-minus')
                     }
+
+                    // Lazy load PDF
+                    if (iframe && !iframe.getAttribute('src')) {
+                        iframe.setAttribute('src', iframe.dataset.src)
+                    }
                 })
 
+                // Saat ditutup (opsional: unload PDF)
                 target.addEventListener('hide.bs.collapse', function () {
                     if (icon) {
                         icon.classList.remove('fa-minus')
                         icon.classList.add('fa-plus')
+                    }
+
+                    // Kosongkan src agar ringan (optional)
+                    if (iframe) {
+                        iframe.removeAttribute('src')
                     }
                 })
             })
