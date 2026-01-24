@@ -41,7 +41,7 @@ class SuratTte extends Model
         'id',
         'tte_template_id',
         'tte_draft_id',
-        'esignmoduls_id',
+        'modul_surat_id',
         'number',
         'name',
         'unitCode',

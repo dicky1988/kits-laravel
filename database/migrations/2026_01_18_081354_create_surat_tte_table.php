@@ -18,7 +18,7 @@ return new class extends Migration
             // RELATION / REFERENSI
             $table->unsignedBigInteger('tte_template_id')->nullable();
             $table->unsignedBigInteger('tte_draft_id')->nullable();
-            $table->unsignedBigInteger('esignmoduls_id')->nullable();
+            $table->unsignedBigInteger('modul_surat_id')->nullable();
 
             // DATA DOKUMEN
             $table->string('number', 255)->nullable();

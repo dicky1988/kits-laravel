@@ -45,8 +45,9 @@ class MonitoringController extends Controller
         $search  = $request->get('search');
         $year    = $request->get('year');
 
-        $sort      = $request->get('sort', 'created_at'); // default
-        $direction = $request->get('direction', 'desc');  // asc | desc
+        $sort        = $request->get('sort', 'created_at'); // default
+        $direction   = $request->get('direction', 'desc');  // asc | desc
+        $jenis_surat = $request->get('jenis_surat');
 
         // Ambil token dari .env (pastikan sama dengan token statik di API)
         $apiToken = env('API_STATIC_TOKEN');
@@ -56,13 +57,14 @@ class MonitoringController extends Controller
                 'Authorization' => 'Bearer ' . $apiToken,
             ])->get(config('api.base_url') . '/api/surattte',
                 [
-                    'page' => $page,
-                    'per_page' => $perPage,
-                    'search'   => $search,
-                    'sort'      => $sort,
-                    'direction' => $direction,
-                    'year'      => $year,
-                    'mode_data' => 'monitoring',
+                    'page'        => $page,
+                    'per_page'    => $perPage,
+                    'search'      => $search,
+                    'sort'        => $sort,
+                    'direction'   => $direction,
+                    'year'        => $year,
+                    'mode_data'   => 'monitoring',
+                    'jenis_surat' => $jenis_surat,
                 ]
             );
 
@@ -70,12 +72,32 @@ class MonitoringController extends Controller
             return abort(500, 'API Surat TTE tidak dapat diakses');
         }
 
+        // =======================
+        // AMBIL LIST JENIS SURAT
+        // =======================
+        $jenisSuratResponse = Http::timeout(5)
+            ->withHeaders([
+                'Authorization' => 'Bearer ' . $apiToken,
+            ])->get(config('api.base_url') . '/api/modulsurat',[
+                'per_page' => 100,
+                'is_aktif' => 1
+            ]);
+
+        if ($jenisSuratResponse->failed()) {
+            $jenisSuratList = collect(); // fallback aman
+        } else {
+            $jenisSuratList = collect($jenisSuratResponse->json('data'))
+                ->sortBy('nama')
+                ->values();
+        }
+
         return view('tte.surat.monitoring.index', [
-            'ttesurat'    => $response->json('data'),
-            'meta'        => $response->json('meta'),
-            'sort'        => $sort,
-            'direction'   => $direction,
-            'breadcrumbs' => $breadcrumbs,
+            'ttesurat'       => $response->json('data'),
+            'meta'           => $response->json('meta'),
+            'sort'           => $sort,
+            'direction'      => $direction,
+            'breadcrumbs'    => $breadcrumbs,
+            'jenisSuratList' => $jenisSuratList,
         ]);
     }
 

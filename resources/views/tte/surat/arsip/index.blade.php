@@ -43,6 +43,29 @@
         margin-left: 20px;
     }
 </style>
+<style>
+    /* === SELECT2 = BOOTSTRAP FORM-SELECT-SM === */
+    .select2-container--default .select2-selection--single {
+        min-height: calc(1.5em + .5rem + 2px); /* Bootstrap sm */
+        height: calc(1.5em + .5rem + 2px);
+        padding: .25rem .5rem;
+        font-size: .875rem;
+        border: 1px solid #ced4da;
+        border-radius: .25rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        padding-left: 0;
+        padding-right: 0;
+        line-height: normal;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 100%;
+    }
+</style>
 
 @section('content')
     <div class="container-fluid px-3">
@@ -72,56 +95,75 @@
                 @if(isset($meta))
                     <div class="mb-3">
 
-                        {{-- BARIS ATAS: FILTER --}}
-                        <form method="GET" class="d-flex align-items-center gap-2 flex-wrap mb-3">
+                        {{-- BARIS 1 : SEARCH + TAHUN + JENIS SURAT + BUTTON --}}
+                        <form method="GET" class="mb-2">
 
-                            {{-- SEARCH --}}
-                            <input type="text"
-                                   name="search"
-                                   value="{{ request('search') }}"
-                                   class="form-control form-control-sm"
-                                   placeholder="Cari surat..."
-                                   style="width:200px">
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
 
-                            {{-- FILTER TAHUN --}}
-                            @php
-                                $currentYear = now()->year;
-                                $selectedYear = request('year', $currentYear);
-                            @endphp
+                                {{-- SEARCH --}}
+                                <input type="text"
+                                       name="search"
+                                       value="{{ request('search') }}"
+                                       class="form-control form-control-sm"
+                                       placeholder="Cari surat..."
+                                       style="width:220px">
 
-                            <select name="year"
-                                    onchange="this.form.submit()"
-                                    class="form-select form-select-sm w-auto">
-                                <option value="">Semua Tahun</option>
-                                @for($y = $currentYear; $y >= 2025; $y--)
-                                    <option value="{{ $y }}"
-                                        {{ (string)$selectedYear === (string)$y ? 'selected' : '' }}>
-                                        {{ $y }}
-                                    </option>
-                                @endfor
-                            </select>
+                                {{-- FILTER TAHUN --}}
+                                @php
+                                    $currentYear  = now()->year;
+                                    $selectedYear = request('year', $currentYear);
+                                @endphp
 
-                            {{-- PER PAGE --}}
-                            <span class="small text-muted">Tampilkan</span>
+                                <select name="year"
+                                        onchange="this.form.submit()"
+                                        class="form-select form-select-sm"
+                                        style="width:140px">
+                                    <option value="">Semua Tahun</option>
+                                    @for($y = $currentYear; $y >= 2025; $y--)
+                                        <option value="{{ $y }}" {{ (string)$selectedYear === (string)$y ? 'selected' : '' }}>
+                                            {{ $y }}
+                                        </option>
+                                    @endfor
+                                </select>
 
-                            <select name="per_page"
-                                    onchange="this.form.submit()"
-                                    class="form-select form-select-sm w-auto">
-                                @foreach([10,25,50,100] as $size)
-                                    <option value="{{ $size }}"
-                                        {{ request('per_page',10) == $size ? 'selected' : '' }}>
-                                        {{ $size }}
-                                    </option>
-                                @endforeach
-                            </select>
+                                {{-- FILTER JENIS SURAT --}}
+                                <select name="jenis_surat"
+                                        class="form-select form-select-sm select2">
+                                    <option value="">Semua Jenis Surat</option>
+                                    @foreach($jenisSuratList as $jenis)
+                                        <option value="{{ $jenis['id'] }}"
+                                            {{ request('jenis_surat') == $jenis['id'] ? 'selected' : '' }}>
+                                            {{ $jenis['nama'] }}
+                                        </option>
+                                    @endforeach
+                                </select>
 
-                            {{-- BUTTON --}}
-                            <button class="btn btn-sm btn-outline-primary">
-                                <i class="fa fa-search"></i>
-                            </button>
+                                {{-- BUTTON SEARCH (NEMPEL DI SEBELAH JENIS SURAT) --}}
+                                <button class="btn btn-sm btn-outline-primary">
+                                    <i class="fa fa-search"></i>
+                                </button>
+
+                            </div>
+
+                            {{-- BARIS 2 : PER PAGE --}}
+                            <div class="d-flex align-items-center gap-2 mt-2">
+                                <span class="small text-muted">Tampilkan</span>
+
+                                <select name="per_page"
+                                        onchange="this.form.submit()"
+                                        class="form-select form-select-sm"
+                                        style="width:90px">
+                                    @foreach([10,25,50,100] as $size)
+                                        <option value="{{ $size }}" {{ request('per_page',10) == $size ? 'selected' : '' }}>
+                                            {{ $size }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
                         </form>
 
-                        {{-- BARIS BAWAH: PAGINATION --}}
+                        {{-- PAGINATION --}}
                         <div class="d-flex justify-content-end">
                             <nav>
                                 <ul class="pagination pagination-sm mb-0">
@@ -426,5 +468,18 @@
                 })
 
         })
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2({
+                placeholder: 'Pilih Jenis Surat',
+                allowClear: true,
+                width: '220px'
+            });
+
+            $('.select2').on('change', function () {
+                $(this).closest('form').submit();
+            });
+        });
     </script>
 @endpush

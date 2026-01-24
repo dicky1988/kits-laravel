@@ -35,7 +35,7 @@ class TteSyncService
                 $payload = [
                     'tte_template_id'  => $tteNew->tte_template_id,
                     'tte_draft_id'     => $tteNew->tte_draft_id,
-                    'esignmoduls_id'   => $tteNew->esignmoduls_id,
+                    'modul_surat_id'   => $tteNew->esignmoduls_id,
                     'number'           => $tteNew->number,
                     'name'             => $tteNew->name,
                     'unitCode'         => $tteNew->unitCode,

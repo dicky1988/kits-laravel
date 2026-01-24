@@ -83,7 +83,9 @@ class InputSuratController extends Controller
         $pegawaiResponse = Http::timeout(5)
             ->withHeaders([
                 'Authorization' => 'Bearer ' . $apiToken,
-            ])->get(config('api.base_url') . '/api/pegawai');
+            ])->get(config('api.base_url') . '/api/pegawai',[
+                'per_page' => 100
+            ]);
 
         if ($pegawaiResponse->failed()) {
             $pegawaiList = collect(); // fallback aman

@@ -31,6 +31,9 @@ class RolePermissionSeeder extends Seeder
             'menu.ttesurat.monitoring',
             'menu.ttesurat.arsip',
             'menu.ttesurat.input.surat',
+            'menu.ttesurat.input.surat.edit',
+            'menu.ttesurat.input.surat.delete',
+            'menu.ttesurat.input.surat.add'
         ];
 
         foreach ($permissions as $perm) {
