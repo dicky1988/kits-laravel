@@ -47,7 +47,7 @@
 
                 {{-- TOMBOL TAMBAH --}}
                 @can('menu.ttesurat.input.surat.add')
-                    <a href="{{ route('input.create') }}"
+                    <a href="{{ route('input.step.satu') }}"
                        class="btn btn-sm btn-primary">
                         <i class="fa fa-plus me-1"></i>
                         Tambah Surat

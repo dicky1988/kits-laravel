@@ -78,4 +78,17 @@ class User extends Authenticatable
             'active_role_id'
         );
     }
+
+    /**
+     * Relasi ke Pegawai
+     * User.nip_lama -> Pegawai.pegawaiID
+     */
+    public function pegawai()
+    {
+        return $this->hasOne(
+            Pegawai::class,
+            'pegawaiID',   // foreign key di tabel pegawai
+            'nip_lama'     // local key di tabel users
+        );
+    }
 }

@@ -113,8 +113,8 @@ Route::middleware(['auth', 'active.permission:menu.ttesurat'])
     ->group(function () {
 
         Route::get('/', [InputSuratController::class, 'index'])->name('index');
-        Route::get('/create', [InputSuratController::class, 'create'])->name('create');
-        Route::post('/store', [InputSuratController::class, 'store'])->name('store');
+        Route::get('/input/step/satu', [InputSuratController::class, 'inputStepSatu'])->name('step.satu');
+        Route::post('/store/step/satu', [InputSuratController::class, 'storeStepSatu'])->name('store.step.satu');
         Route::get('/edit/{id}', [InputSuratController::class, 'edit'])->name('edit');
         Route::put('/{id}', [InputSuratController::class, 'update'])->name('update');
         Route::delete('/{id}', [InputSuratController::class, 'destroy'])->name('destroy');
