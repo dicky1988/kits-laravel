@@ -41,7 +41,10 @@
 
             <div class="card-body">
 
-                <form action="{{ route('input.store.step.satu') }}" method="POST" enctype="multipart/form-data">
+                <form id="formSurat"
+                      action="{{ route('input.store.step.satu') }}"
+                      method="POST"
+                      enctype="multipart/form-data">
                     @csrf
 
                     {{-- JUDUL --}}
@@ -254,7 +257,9 @@
                         @enderror
                     </div>
 
-                    <button type="submit" class="btn btn-primary">
+                    <button type="button"
+                            class="btn btn-primary"
+                            id="btnSubmit">
                         <i class="fa fa-save me-1"></i> Simpan Draft
                     </button>
 
@@ -267,6 +272,7 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function () {
 
@@ -344,6 +350,53 @@
 
             $reviewSelect.on('change', toggleReviewLevel);
             toggleReviewLevel(); // handle old value
+        });
+    </script>
+    <script>
+        const btnSubmit = document.getElementById('btnSubmit');
+        const formSurat = document.getElementById('formSurat');
+
+        btnSubmit.addEventListener('click', function () {
+
+            Swal.fire({
+                title: 'Simpan Surat?',
+                text: 'Surat akan disimpan sebagai draft TTE',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, simpan',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#0d6efd'
+            }).then((result) => {
+
+                if (!result.isConfirmed) return;
+
+                // =====================
+                // DISABLE BUTTON
+                // =====================
+                btnSubmit.disabled = true;
+                btnSubmit.innerHTML = `
+                <span class="spinner-border spinner-border-sm me-1"></span>
+                Menyimpan...
+            `;
+
+                // =====================
+                // LOADING ALERT
+                // =====================
+                Swal.fire({
+                    title: 'Menyimpan...',
+                    text: 'Mohon tunggu',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // =====================
+                // SUBMIT FORM
+                // =====================
+                formSurat.submit();
+            });
+
         });
     </script>
 @endpush

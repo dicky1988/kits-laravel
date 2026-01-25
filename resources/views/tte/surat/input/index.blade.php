@@ -243,22 +243,37 @@
                                         </a>
                                     @endcan
 
-                                    {{-- DELETE --}}
+                                    {{-- SOFT DELETE --}}
                                     @can('menu.ttesurat.input.surat.delete')
-                                        <form action="{{ route('input.destroy', $konsepsurat['id']) }}"
-                                              method="POST"
-                                              onsubmit="return confirm('Yakin ingin menghapus surat ini?')"
-                                              class="m-0">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                    class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
-                                                    style="width:32px;height:32px"
-                                                    title="Hapus Surat">
+                                        @if(is_null($konsepsurat['deleted_at']))
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-warning"
+                                                    onclick="softDelete('{{ $konsepsurat['id'] }}')"
+                                                    title="Hapus (Soft)">
                                                 <i class="fa fa-trash"></i>
                                             </button>
-                                        </form>
+                                        @endif
                                     @endcan
+
+                                    {{-- FORCE DELETE --}}
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-danger"
+                                            onclick="forceDelete('{{ $konsepsurat['id'] }}')"
+                                            title="Hapus Permanen">
+                                        <i class="fa fa-skull-crossbones"></i>
+                                    </button>
+
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-success"
+                                            onclick="restoreData('{{ $konsepsurat['id'] }}')"
+                                            title="Restore">
+                                        <i class="fa fa-undo"></i>
+                                    </button>
+
+                                    {{-- RESTORE --}}
+                                    @if(!is_null($konsepsurat['deleted_at']))
+
+                                    @endif
 
                                 </div>
                             </td>
@@ -354,6 +369,7 @@
 
 @endsection
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
@@ -406,4 +422,77 @@
             });
         });
     </script>
+    <script>
+        function softDelete(id) {
+            Swal.fire({
+                title: 'Hapus Surat?',
+                text: 'Surat akan dipindahkan ke trash',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, hapus',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    submitForm(
+                        'DELETE',
+                        "{{ route('input.destroy', ':id') }}".replace(':id', id)
+                    );
+                }
+            });
+        }
+
+        function restoreData(id) {
+            Swal.fire({
+                title: 'Restore Surat?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Restore',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    submitForm(id, 'POST', '{{ url("tte/surat") }}/' + id + '/restore');
+                }
+            });
+        }
+
+        function forceDelete(id) {
+            Swal.fire({
+                title: 'HAPUS PERMANEN?',
+                text: 'Data dan file akan hilang SELAMANYA!',
+                icon: 'error',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus permanen',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    submitForm(id, 'DELETE', '{{ url("tte/surat") }}/' + id + '/force');
+                }
+            });
+        }
+
+        function submitForm(method, action) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = action;
+
+            form.innerHTML = `
+        @csrf
+            <input type="hidden" name="_method" value="${method}">
+    `;
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
+    @if(session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: '{{ session('success') }}',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
 @endpush

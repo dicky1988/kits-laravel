@@ -243,8 +243,50 @@ class InputSuratController extends Controller
                 ->withInput();
         }
 
-        return redirect()
-            ->route('input.success')
-            ->with('success', 'Surat TTE berhasil dibuat');
+        return back()->with('success', 'Surat TTE berhasil dibuat');
+    }
+
+    // =========================
+    // SOFT DELETE
+    // =========================
+    public function destroy(string $id)
+    {
+        $apiToken = env('API_STATIC_TOKEN');
+        $baseUrl  = config('api.base_url');
+        $response = $this->api()
+            ->withToken($apiToken)
+            ->delete($baseUrl . "/api/surattte/{$id}");
+        return back()->with(
+            $response->successful() ? 'success' : 'error',
+            $response->json('message')
+        );
+    }
+
+    // =========================
+    // RESTORE
+    // =========================
+    public function restore(string $id)
+    {
+        $response = $this->api()
+            ->post(config('api.base_url') . "/api/surattte/{$id}/restore");
+
+        return back()->with(
+            $response->successful() ? 'success' : 'error',
+            $response->json('message')
+        );
+    }
+
+    // =========================
+    // FORCE DELETE
+    // =========================
+    public function forceDelete(string $id)
+    {
+        $response = $this->api()
+            ->delete(config('api.base_url') . "/api/surattte/{$id}/force");
+
+        return back()->with(
+            $response->successful() ? 'success' : 'error',
+            $response->json('message')
+        );
     }
 }
