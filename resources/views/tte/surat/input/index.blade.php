@@ -258,7 +258,7 @@
                                     {{-- FORCE DELETE --}}
                                     <button type="button"
                                             class="btn btn-sm btn-outline-danger"
-                                            onclick="forceDelete('{{ $konsepsurat['id'] }}')"
+                                            onclick="forceDelete(this, '{{ $konsepsurat['id'] }}')"
                                             title="Hapus Permanen">
                                         <i class="fa fa-skull-crossbones"></i>
                                     </button>
@@ -455,18 +455,29 @@
             });
         }
 
-        function forceDelete(id) {
+        function forceDelete(btn, id) {
             Swal.fire({
                 title: 'HAPUS PERMANEN?',
                 text: 'Data dan file akan hilang SELAMANYA!',
                 icon: 'error',
                 showCancelButton: true,
-                confirmButtonColor: '#d33',
                 confirmButtonText: 'Ya, hapus permanen',
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    submitForm(id, 'DELETE', '{{ url("tte/surat") }}/' + id + '/force');
+
+                    btn.disabled = true;
+
+                    Swal.fire({
+                        title: 'Menghapus...',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+
+                    submitForm(
+                        'DELETE',
+                        `{{ route('input.force.delete', ':id') }}`.replace(':id', id)
+                    );
                 }
             });
         }
@@ -495,4 +506,15 @@
             });
         </script>
     @endif
+    {{--@if(session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: "{{ session('success') }}",
+                timer: 1500,
+                showConfirmButton: false
+            });
+        </script>
+    @endif--}}
 @endpush

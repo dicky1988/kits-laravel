@@ -244,19 +244,19 @@ if (! function_exists('titleEselonBadge')) {
     {
         switch ($reviuLast) {
             case 1:
-                return badge('secondary', 'Konseptor');
+                return badge('secondary', 'Eselon I');
 
             case 2:
-                return badge('info', 'Eselon IV');
+                return badge('info', 'Eselon II');
 
             case 3:
                 return badge('info', 'Eselon III');
 
             case 4:
-                return badge('primary', 'Eselon II');
+                return badge('primary', 'Eselon IV');
 
-            case 5:
-                return badge('primary', 'Eselon I / Kepala');
+            case 0:
+                return badge('primary', 'Kepala');
 
             default:
                 return badge('light', 'NO-DATA');

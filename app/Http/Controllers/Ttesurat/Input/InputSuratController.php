@@ -232,18 +232,23 @@ class InputSuratController extends Controller
             ]);
 
         //dd(auth()->user()->nip_lama);
-        dd($response->json('message'));
+        //dd($response->json('message'));
 
         // =========================
         // RESPONSE HANDLING
         // =========================
         if (! $response->successful()) {
             return back()
-                ->withErrors(['api' => $response->json('message') ?? 'Gagal menyimpan surat'])
+                ->withErrors([
+                    'api' => $response->json('message') ?? 'Gagal menyimpan surat'
+                ])
                 ->withInput();
         }
 
-        return back()->with('success', 'Surat TTE berhasil dibuat');
+        //return back()->with('success', 'Surat TTE berhasil dibuat');
+        return redirect()
+            ->route('input.index') // <-- route halaman list
+            ->with('success', 'Surat TTE berhasil dibuat');
     }
 
     // =========================
@@ -281,12 +286,21 @@ class InputSuratController extends Controller
     // =========================
     public function forceDelete(string $id)
     {
+        $apiToken = env('API_STATIC_TOKEN');
+        $baseUrl  = config('api.base_url');
+
         $response = $this->api()
-            ->delete(config('api.base_url') . "/api/surattte/{$id}/force");
+            ->withToken($apiToken)
+            ->delete($baseUrl . "/api/surattte/{$id}/force");
+        //dd($response->json('message'));
+
+        if ($response->successful()) {
+            return back()->with('success', $response->json('message'));
+        }
 
         return back()->with(
-            $response->successful() ? 'success' : 'error',
-            $response->json('message')
+            'error',
+            $response->json('message') ?? 'Gagal menghapus surat'
         );
     }
 }

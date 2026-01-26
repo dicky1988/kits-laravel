@@ -273,6 +273,15 @@
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if ($errors->any())
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal menyimpan',
+                html: `{!! implode('<br>', $errors->all()) !!}`
+            });
+        </script>
+    @endif
     <script>
         $(document).ready(function () {
 
@@ -358,6 +367,14 @@
 
         btnSubmit.addEventListener('click', function () {
 
+            // =====================
+            // CEK VALIDASI HTML
+            // =====================
+            if (!formSurat.checkValidity()) {
+                formSurat.reportValidity(); // tampilkan pesan browser
+                return;
+            }
+
             Swal.fire({
                 title: 'Simpan Surat?',
                 text: 'Surat akan disimpan sebagai draft TTE',
@@ -375,9 +392,9 @@
                 // =====================
                 btnSubmit.disabled = true;
                 btnSubmit.innerHTML = `
-                <span class="spinner-border spinner-border-sm me-1"></span>
-                Menyimpan...
-            `;
+            <span class="spinner-border spinner-border-sm me-1"></span>
+            Menyimpan...
+        `;
 
                 // =====================
                 // LOADING ALERT
@@ -386,17 +403,11 @@
                     title: 'Menyimpan...',
                     text: 'Mohon tunggu',
                     allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
+                    didOpen: () => Swal.showLoading()
                 });
 
-                // =====================
-                // SUBMIT FORM
-                // =====================
                 formSurat.submit();
             });
-
         });
     </script>
 @endpush
