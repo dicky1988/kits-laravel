@@ -46,6 +46,7 @@ class InputSuratController extends Controller
 
         $sort      = $request->get('sort', 'created_at'); // default
         $direction = $request->get('direction', 'desc');  // asc | desc
+        $is_delete = $request->get('is_delete');
 
         // 🔥 tentukan creator
         $creator = $request->get('creator');
@@ -69,7 +70,8 @@ class InputSuratController extends Controller
                     'sort'      => $sort,
                     'direction' => $direction,
                     'year'      => $year,
-                    'creator'   => $creator
+                    'creator'   => $creator,
+                    'is_delete' => $is_delete,
                 ]
             );
 
@@ -272,13 +274,21 @@ class InputSuratController extends Controller
     // =========================
     public function restore(string $id)
     {
-        $response = $this->api()
-            ->post(config('api.base_url') . "/api/surattte/{$id}/restore");
+        $apiToken = env('API_STATIC_TOKEN');
+        $baseUrl  = config('api.base_url');
 
-        return back()->with(
+        $response = $this->api()
+            ->withToken($apiToken)
+            ->post($baseUrl . "/api/surattte/{$id}/restore");
+
+        /*return back()->with(
             $response->successful() ? 'success' : 'error',
             $response->json('message')
-        );
+        );*/
+        return redirect()
+            ->route('input.index', ['is_delete' => null])
+            ->with('success', 'Surat berhasil direstore');
+
     }
 
     // =========================

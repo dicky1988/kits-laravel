@@ -33,26 +33,48 @@
     <div class="card shadow-sm mt-3">
 
         <div class="card-header bg-white border-bottom">
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
 
+                {{-- JUDUL --}}
                 <div>
                     <h5 class="mb-0 fw-semibold">
                         <i class="fa fa-file-pen me-2 text-primary"></i>
                         List Surat Konsep
                     </h5>
-                    {{--<small class="text-muted">
-                        Data pengguna diambil dari API User
-                    </small>--}}
                 </div>
 
-                {{-- TOMBOL TAMBAH --}}
-                @can('menu.ttesurat.input.surat.add')
-                    <a href="{{ route('input.step.satu') }}"
-                       class="btn btn-sm btn-primary">
-                        <i class="fa fa-plus me-1"></i>
-                        Tambah Surat
-                    </a>
-                @endcan
+                {{-- AKSI --}}
+                <div class="d-flex align-items-center gap-2">
+
+                    {{-- TAMBAH --}}
+                    @can('menu.ttesurat.input.surat.add')
+                        <a href="{{ route('input.step.satu') }}"
+                           class="btn btn-sm btn-primary">
+                            <i class="fa fa-plus me-1"></i>
+                            Tambah Surat
+                        </a>
+                    @endcan
+
+                    {{-- TRASH / AKTIF (SUPERADMIN) --}}
+                    @role('superadmin')
+                    <div class="btn-group btn-group-sm" role="group">
+
+                        <a href="{{ request()->fullUrlWithQuery(['is_delete' => null, 'page' => 1]) }}"
+                           class="btn {{ request('is_delete') ? 'btn-outline-secondary' : 'btn-secondary' }}">
+                            <i class="fa fa-list me-1"></i>
+                            Aktif
+                        </a>
+
+                        <a href="{{ request()->fullUrlWithQuery(['is_delete' => '1', 'page' => 1]) }}"
+                           class="btn {{ request('is_delete') == '1' ? 'btn-danger' : 'btn-outline-danger' }}">
+                            <i class="fa fa-trash me-1"></i>
+                            Trash
+                        </a>
+
+                    </div>
+                    @endrole
+
+                </div>
 
             </div>
         </div>
@@ -233,46 +255,36 @@
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-1">
 
-                                    {{-- EDIT --}}
-                                    @can('menu.ttesurat.input.surat.edit')
-                                        <a href="{{ route('input.edit', $konsepsurat['id']) }}"
-                                           class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
-                                           style="width:32px;height:32px"
-                                           title="Edit Surat">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
-                                    @endcan
+                                    {{-- AKSI NORMAL --}}
+                                    @if(is_null($konsepsurat['deleted_at']))
+                                        @can('menu.ttesurat.input.surat.edit')
+                                            <a href="{{ route('input.edit', $konsepsurat['id']) }}"
+                                               class="btn btn-sm btn-outline-primary"
+                                               title="Edit">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                        @endcan
 
-                                    {{-- SOFT DELETE --}}
-                                    @can('menu.ttesurat.input.surat.delete')
-                                        @if(is_null($konsepsurat['deleted_at']))
-                                            <button type="button"
-                                                    class="btn btn-sm btn-outline-warning"
+                                        @can('menu.ttesurat.input.surat.delete')
+                                            <button class="btn btn-sm btn-outline-warning"
                                                     onclick="softDelete('{{ $konsepsurat['id'] }}')"
-                                                    title="Hapus (Soft)">
+                                                    title="Hapus">
                                                 <i class="fa fa-trash"></i>
                                             </button>
-                                        @endif
-                                    @endcan
+                                        @endcan
+                                    @else
+                                        {{-- AKSI TRASH --}}
+                                        <button class="btn btn-sm btn-outline-success"
+                                                onclick="restoreData('{{ $konsepsurat['id'] }}')"
+                                                title="Restore">
+                                            <i class="fa fa-undo"></i>
+                                        </button>
 
-                                    {{-- FORCE DELETE --}}
-                                    <button type="button"
-                                            class="btn btn-sm btn-outline-danger"
-                                            onclick="forceDelete(this, '{{ $konsepsurat['id'] }}')"
-                                            title="Hapus Permanen">
-                                        <i class="fa fa-skull-crossbones"></i>
-                                    </button>
-
-                                    <button type="button"
-                                            class="btn btn-sm btn-outline-success"
-                                            onclick="restoreData('{{ $konsepsurat['id'] }}')"
-                                            title="Restore">
-                                        <i class="fa fa-undo"></i>
-                                    </button>
-
-                                    {{-- RESTORE --}}
-                                    @if(!is_null($konsepsurat['deleted_at']))
-
+                                        <button class="btn btn-sm btn-outline-danger"
+                                                onclick="forceDelete(this,'{{ $konsepsurat['id'] }}')"
+                                                title="Hapus Permanen">
+                                            <i class="fa fa-skull-crossbones"></i>
+                                        </button>
                                     @endif
 
                                 </div>
@@ -444,13 +456,17 @@
         function restoreData(id) {
             Swal.fire({
                 title: 'Restore Surat?',
+                text: 'Surat akan dikembalikan ke daftar aktif',
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Restore',
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    submitForm(id, 'POST', '{{ url("tte/surat") }}/' + id + '/restore');
+                    submitForm(
+                        'POST',
+                        "{{ route('input.restore', ':id') }}".replace(':id', id)
+                    );
                 }
             });
         }
