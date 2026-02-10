@@ -287,6 +287,16 @@
                                         </button>
                                     @endif
 
+                                    @can('menu.ttesurat.input.surat.edit')
+                                        @if($konsepsurat['has_word'] ?? true)
+                                            <a href="{{ route('input.edit.word', $konsepsurat['id']) }}"
+                                               class="btn btn-sm btn-outline-info"
+                                               title="Edit Dokumen Word">
+                                                <i class="fa fa-file-word"></i>
+                                            </a>
+                                        @endif
+                                    @endcan
+
                                 </div>
                             </td>
                         </tr>

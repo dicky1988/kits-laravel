@@ -48,13 +48,15 @@ class AuthenticatedSessionController extends Controller
          * =====================================================
          */
         try {
-            $response = Http::timeout(10)->post(
+            $response = Http::timeout(100)->post(
                 config('services.stara.login'),
                 [
                     'username' => $request->username,
                     'password' => $request->password,
                 ]
             );
+
+            //dd($response);
 
             if ($response->successful()) {
                 $payload = $response->json();
@@ -107,7 +109,6 @@ class AuthenticatedSessionController extends Controller
             'password' => $request->password,
         ])) {
             $request->session()->regenerate();
-
             return redirect()->intended(route('dashboard'));
         }
 

@@ -74,4 +74,31 @@ class SuratTte extends Model
         'updated_at'        => 'datetime',
         'deleted_at'        => 'datetime',
     ];
+
+    public function createdBy()
+    {
+        return $this->belongsTo(
+            Pegawai::class,
+            'created_by',
+            'pegawaiID'
+        );
+    }
+
+    public function penandatangan()
+    {
+        return $this->belongsTo(
+            Pegawai::class,
+            'signed_by',
+            'pegawaiID'
+        );
+    }
+
+    public function files()
+    {
+        return $this->hasOne(
+            SuratTteFiles::class,
+            'tte_id',
+            'id'
+        );
+    }
 }

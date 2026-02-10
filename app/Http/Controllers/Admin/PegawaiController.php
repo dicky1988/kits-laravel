@@ -61,13 +61,14 @@ class PegawaiController extends Controller
                     'direction' => $direction,
                 ]
             );
+        //dd($response->json());
 
         if ($response->failed()) {
             return abort(500, 'API Pegawai tidak dapat diakses');
         }
 
         return view('admin.referensi.pegawai.index', [
-            'pegawai'  => $response->json('data'),
+            'pegawai'     => $response->json('data'),
             'meta'        => $response->json('meta'),
             'sort'        => $sort,
             'direction'   => $direction,

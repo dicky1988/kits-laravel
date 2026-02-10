@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Ttesurat\Input;
 
 use App\Http\Controllers\Controller;
+use App\Models\SuratTte;
+use App\Models\SuratTteFiles;
+use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -312,5 +315,20 @@ class InputSuratController extends Controller
             'error',
             $response->json('message') ?? 'Gagal menghapus surat'
         );
+    }
+
+    public function editWord(string $id)
+    {
+        $apiToken = env('API_STATIC_TOKEN');
+        $baseUrl  = config('api.base_url');
+
+        /*return view('tte.surat.input.from_edit_word', [
+            //'config' => $response->json()
+        ]);*/
+
+        return view('tte.surat.input.from_edit_word', [
+            'fileUrl' => "http://127.0.0.1:8001/clean.docx",
+            'key'     => 'doc-' . md5('clean.docx'),
+        ]);
     }
 }

@@ -121,6 +121,7 @@ Route::middleware(['auth', 'active.permission:menu.ttesurat'])
         Route::delete('tte/surat/{id}', [InputSuratController::class, 'destroy'])->name('destroy');
         Route::post('{id}/restore', [InputSuratController::class, 'restore'])->name('restore');
         Route::delete('tte/surat/{id}/force', [InputSuratController::class, 'forceDelete'])->name('force.delete');
+        Route::get('tte/surat/{id}/edit/word', [InputSuratController::class, 'editWord'])->name('edit.word');
 
     });
 
